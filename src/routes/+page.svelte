@@ -1,12 +1,13 @@
 <script>
-  import SmileIcon from '$lib/components/SmileIcon.svelte'
-  let cot = 0
-
-  function inc () {
-    cot++
+  import logo from '$lib/images/logo.svg'
+  function signin () {
+    window.location.href = 'https://auth.njsc.ltd/#/launch/acewords'
   }
 </script>
 
-<SmileIcon></SmileIcon>
-<p>cot: {cot}</p>
-<button on:click={inc}>Click Me</button>
+<div class="h-screen w-screen flex flex-col items-center justify-center">
+  <img class="w-48 sm:w-64" src={logo}>
+  <h1 class="text-gray-700 font-bold text-5xl">Acewords</h1>
+  <p class="text-gray-500">in a simple but powerful way</p>
+  <button class="font-bold text-lg text-white px-4 py-2 rounded shadow transition-all hover:shadow-md bg-blue-500 m-8" on:click={signin}>Sign in</button>
+</div>
