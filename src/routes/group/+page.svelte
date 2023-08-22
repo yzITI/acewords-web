@@ -3,7 +3,7 @@
   import { mdiAccountGroupOutline, mdiPlus } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
   import { loading } from '$lib/stores.js'
-  import srpc from '$lib/utilities/srpc.js'
+  import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
   export let data
   let groups = []
