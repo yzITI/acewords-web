@@ -12,11 +12,11 @@ function decodeToken (token) {
 // auto login with localStorage
 export function load () {
   const token = window.localStorage.token
-  if (!token) return
+  if (!token) return {}
   const payload = decodeToken(token)
   if (!payload.id || payload.iat < Date.now() - 7 * 86400e3) {
     window.localStorage.removeItem('token')
-    return
+    return {}
   }
   return { user: { ...payload, token } }
 }

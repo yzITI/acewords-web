@@ -1,3 +1,3 @@
 import { writable } from 'svelte/store'
 
-export const test = writable({})
+export const loading = writable(false)
