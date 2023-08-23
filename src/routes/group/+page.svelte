@@ -9,7 +9,7 @@
   let groups = []
 
   async function fetch () {
-    $loading = true
+    $loading = 'Loading groups ...'
     groups = await srpc.group.getList(data.user.token)
     groups.sort((a, b) => a.name > b.name ? 1 : -1)
     groups = groups
@@ -31,12 +31,12 @@
   else fetch()
 </script>
 
-<div class="h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
+<div class="min-h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
   <h1 class="text-3xl">我的小组</h1>
   <p class="text-gray-500 text-sm">和朋友们一起背单词吧！</p>
   <div class="mt-6 text-lg font-bold text-gray-700 select-none">
     {#each groups as g}
-      <div class="rounded p-2 my-2 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:click={() => goto('/group/' + g._id)}>
+      <div class="rounded p-2 my-2 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:keypress={() => goto('/group/' + g._id)} on:click={() => goto('/group/' + g._id)}>
         <AIcon path={mdiAccountGroupOutline} size="1.5rem" color="rgb(55 65 81)" />
         <span class="ml-2">{g.name}</span>
       </div>
@@ -46,7 +46,7 @@
         <span class="ml-2">你还没有小组噢，创建或加入一个吧！</span>
       </div>
     {/if}
-    <button class="fixed right-6 bottom-10 rounded-full p-2 bg-blue-500 shadow transition-all hover:shadow-md" on:click={create}>
+    <button class="fixed right-6 bottom-10 rounded-full p-2 bg-blue-500 shadow transition-all hover:shadow-md" on:click={create} on:keypress={create}>
       <AIcon path={mdiPlus} size="3rem" color="white" />
     </button>
   </div>

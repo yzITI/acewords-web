@@ -12,7 +12,10 @@
 <slot></slot>
 
 {#if $loading}
-  <div transition:fade class="fixed z-50 top-0 left-0 w-screen h-screen bg-gray-100 flex items-center justify-center">
+  <div transition:fade class="fixed z-50 top-0 left-0 w-screen h-screen bg-gray-100 flex flex-col items-center justify-center">
     <img alt="loading" src={loadingImg}>
+    {#if typeof $loading === 'string'}
+      <div class="my-2">{$loading}</div>
+    {/if}
   </div>
 {/if}
