@@ -7,16 +7,23 @@
   import swal from 'sweetalert2'
   import model from '$lib/model.js'
   export let data
+  
+  const LS = window.localStorage
+  let meta = JSON.parse(LS.meta || '{}')
 
-  async function fetch () {
-    $loading = 'Sync data ...'
+  async function sync () {
+    $loading = 'Sync your progress ...'
     const remote = await srpc.user.getMeta(data.user.token)
-    const local = JSON.parse(window.localStorage.meta || '{}')
+    const local = JSON.parse(LS.meta || '{}')
     if (remote.time > local.time) { // update local
       const full = await srpc.user.get(data.user.token)
-      console.log(full)
+      await model.import(full.data)
+      LS.meta = JSON.stringify(full.meta)
+      meta = remote
     }
     if (remote.time < local.time) { // update remote
+      await srpc.user.put(token, await model.export(), local)
+      meta = local
     }
     $loading = false
   }
@@ -27,7 +34,7 @@
   }
 
   if (!data.user) goto('/')
-  else fetch()
+  else sync()
 </script>
 
 <div class="h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
