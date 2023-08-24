@@ -11,6 +11,7 @@
   
   const LS = window.localStorage
   let meta = JSON.parse(LS.meta || '{}')
+  let hasReview = false
 
   async function sync () {
     $loading = 'Sync your progress ...'
@@ -49,6 +50,14 @@
     }
     goto('/book')
   }
+
+  async function start () {
+    $loading = '背单词要对自己负责！'
+    goto('/word')
+  }
+
+  async function startNew () {
+  }
 </script>
 
 <div class="h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
@@ -62,6 +71,10 @@
       </div>
       <h2 class="font-mono m-2"><b class="text-4xl">{meta.power || 0}</b>/{meta.bookCount || 'NaN'}</h2>
       <code class="block mx-2 text-xs text-gray-300">{meta.time ? moment(meta.time).format('YYYY-MM-DD HH:mm:ss') : 'No Record'}</code>
+      <div class="items-stretch flex items-center mt-2">
+        <button on:click={start} disabled={!hasReview} class={'grow transition-all shadow hover:shadow-md rounded p-2 m-2 bg-blue-500 text-white font-bold ' + (hasReview ? 'bg-blue-500' : 'bg-gray-500')}>{hasReview ? '复习单词' : '暂无复习'}</button>
+        <button on:click={startNew} class="grow transition-all shadow hover:shadow-md rounded p-2 m-2 bg-purple-500 text-white font-bold">学习新单词</button>
+      </div>
     </div>
     <div class="flex flex-col my-4 sm:my-0 sm:mx-4">
       <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:keypress={() => goto('/group')} on:click={() => goto('/group')}>
