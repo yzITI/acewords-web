@@ -6,6 +6,7 @@
   import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
   import model from '$lib/model.js'
+  import moment from 'moment'
   export let data
   
   const LS = window.localStorage
@@ -15,39 +16,58 @@
     $loading = 'Sync your progress ...'
     const remote = await srpc.user.getMeta(data.user.token)
     const local = JSON.parse(LS.meta || '{}')
-    if (remote.time > local.time) { // update local
+    if ((remote.time || 0) > (local.time || 0)) { // update local
       const full = await srpc.user.get(data.user.token)
       await model.import(full.data)
       LS.meta = JSON.stringify(full.meta)
       meta = remote
     }
-    if (remote.time < local.time) { // update remote
+    if ((remote.time || 0) < (local.time || 0)) { // update remote
       await srpc.user.put(token, await model.export(), local)
       meta = local
     }
     $loading = false
   }
 
+  if (!data.user) goto('/')
+  else sync()
+
   function signout () {
     window.localStorage.removeItem('token')
     goto('/')
   }
 
-  if (!data.user) goto('/')
-  else sync()
+  async function book () {
+    if (meta.book) {
+      const { isConfirmed } = await swal.fire({
+        title: '更换单词书',
+        html: '<b style="color: red;">您的背单词进度将被清除！</b><br>是否继续前往更换单词书？',
+        icon: 'warning',
+        showCancelButton: true
+      })
+      if (!isConfirmed) return
+    }
+    goto('/book')
+  }
 </script>
 
 <div class="h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
   <h1 class="text-3xl">Hi, {data.user.name}</h1>
   <p class="text-gray-500 text-sm">Ace your words in a simple but powerful way!</p>
-  <div class="my-4 text-xl font-bold text-gray-700 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 select-none">
-    <div class="rounded p-4 m-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-blue-500 text-white">
-      <AIcon path={mdiBookOutline} size="2rem" color="white" />
-      <span class="ml-2">开始背单词！</span>
+  <div class="my-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 select-none">
+    <div class="rounded border bg-white flex flex-col p-2">
+      <div class="flex items-center" on:keypress={book} on:click={book}>
+        <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
+        <b class="ml-1">{meta.bookName || '请选择单词书'}</b>
+      </div>
+      <h2 class="font-mono m-2"><b class="text-4xl">{meta.power || 0}</b>/{meta.bookCount || 'NaN'}</h2>
+      <code class="block mx-2 text-xs text-gray-300">{meta.time ? moment(meta.time).format('YYYY-MM-DD HH:mm:ss') : 'No Record'}</code>
     </div>
-    <div class="rounded p-4 m-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:keypress={() => goto('/group')} on:click={() => goto('/group')}>
-      <AIcon path={mdiAccountGroupOutline} size="2rem" color="rgb(55 65 81)" />
-      <span class="ml-2">我的小组</span>
+    <div class="flex flex-col my-4 sm:my-0 sm:mx-4">
+      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:keypress={() => goto('/group')} on:click={() => goto('/group')}>
+        <AIcon path={mdiAccountGroupOutline} size="2rem" color="rgb(55 65 81)" />
+        <b class="ml-2">我的小组</b>
+      </div>
     </div>
   </div>
   <button class="mt-2 mb-10 flex items-center text-gray-500 font-bold" on:click={signout} on:keypress={signout}>
