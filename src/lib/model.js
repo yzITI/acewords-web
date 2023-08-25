@@ -4,7 +4,7 @@ export const DB = new Dexie('acewords')
 
 // id is index in book
 DB.version(1).stores({
-  lib: 'id', // { id, _id, word, definition, translation, ... }
+  lib: '_id', // { _id, word, definition, translation, ... }
   pro: 'id, time, due' // { id, step, time, due }
 })
 export const time = () => Math.floor(Date.now() / 1000)
@@ -18,7 +18,7 @@ export const model = {
     async put (words) {
       for (const w of words) await DB.lib.put(w)
     },
-    get: id => DB.lib.get(id),
+    get: _id => DB.lib.get(_id),
     clear: () => DB.lib.clear()
   },
   pro: {
@@ -40,7 +40,6 @@ export const model = {
   },
   async import (data) {
     await this.pro.clear()
-    await this.lib.clear()
     const raw = data.split('.').filter(x => x).map(x => x.split(',').map(y => parseInt(y, 36)))
     for (const p of raw) await this.pro.put({ id: p[0], step: p[1], time: p[2], due: model.stepTime[p[1]] + p[2] })
   }
