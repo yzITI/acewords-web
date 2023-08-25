@@ -19,6 +19,7 @@
       await model.pro.clear()
       LS.removeItem('meta')
       LS.removeItem('new')
+      meta = {}
     }
     LS.user = data.user.id
     const remote = await srpc.user.getMeta(data.user.token)
