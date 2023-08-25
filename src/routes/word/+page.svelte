@@ -93,7 +93,7 @@
     // compute power
     const all = await model.pro.all()
     let sum = 0
-    for (const p of all) sum += 1 - 3 / (p.step + 3) + 3 / 19
+    for (const p of all) sum += model.power(p.step)
     meta.power = sum
     meta.time = Date.now()
     LS.meta = JSON.stringify(meta)

@@ -13,6 +13,7 @@ export const model = {
   // in seconds, 0-16
   stepTime: [0, 10, 30, 120, 300, 1800, 43200, 86400, 172800, 345600, 604800, 1296000, 2592000, 5184000, 8640000, 15552000, 300000000],
   time: () => Math.floor(Date.now() / 1000),
+  power: step => Math.min(1 - 1 / (0.5 * step + 1) + 1 / 7, 1),
   // ALL functions are ASYNC
   lib: {
     async put (words) {
