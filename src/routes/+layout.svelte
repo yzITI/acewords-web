@@ -3,6 +3,15 @@
   import loadingImg from '$lib/images/loading.svg'
   import { loading } from '$lib/stores.js'
   import { fade } from 'svelte/transition'
+  function touchevent () {
+    const audio = new Audio('https://dict.youdao.com/dictvoice?audio=hello&type=1')
+    audio.play()
+    setTimeout(() => {
+      audio.pause()
+      document.removeEventListener('touchstart', touchevent)
+    })
+  }
+  document.addEventListener('touchstart', touchevent)
 </script>
 
 <svelte:head>
