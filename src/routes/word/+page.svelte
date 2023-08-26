@@ -96,7 +96,6 @@
     if (currentPro.step > 16) currentPro.step = 16
     currentPro.time = model.time()
     currentPro.due = currentPro.time + model.stepTime[currentPro.step]
-    console.log(currentPro.step, model.stepTime[currentPro.step])
     await model.pro.put(currentPro)
     next()
   }
