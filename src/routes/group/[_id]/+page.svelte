@@ -1,12 +1,14 @@
 <script>
   import { goto } from '$app/navigation'
-  import { mdiAccountGroupOutline, mdiAccountOutline, mdiCheck, mdiTrashCanOutline, mdiChevronLeft } from '@mdi/js'
+  import { mdiAccountGroupOutline, mdiAccountOutline, mdiCheck, mdiTrashCanOutline, mdiChevronLeft, mdiBookOutline } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
   import { loading } from '$lib/stores.js'
   import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
+  import moment from 'moment'
   export let data
   let group = {}
+  let books = {}
 
   async function fetch () {
     $loading = 'Loading group ...'
@@ -22,6 +24,9 @@
       group = await srpc.group.get(data.user.token, data._id)
     }
     group.users.sort((a, b) => a.name < b.name ? 1 : -1)
+    for (const u of group.users) books[u.meta.book] = u.meta.bookName
+    books = books
+    group = group
     $loading = false
   }
 
@@ -69,16 +74,29 @@
       <input class="bg-transparent border-none outline-none ml-2 w-full" bind:value={group.name} disabled={group.admin !== data.user.id}>
     </h1>
     <div class="m-4">
-      {#each group.users as u, i}
-        <div class="rounded p-2 my-2 transition-all shadow hover:shadow-md flex items-center bg-white">
-          <AIcon path={mdiAccountOutline} size="1.5rem" color="rgb(55 65 81)" />
-          <span class="ml-2">{u.name}</span>
-          {#if group.admin === data.user.id && u._id !== data.user.id}
-            <button class="ml-2" on:click={() => removeUser(i)} on:keypress={() => removeUser(i)}>
-              <AIcon path={mdiTrashCanOutline} size="1.25rem" color="rgb(252 165 165)" />
-            </button>
-          {/if}
+      {#each Object.keys(books) as b}
+        <div class="flex items-center mt-8">
+          <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
+          <b class="ml-1">{books[b]}</b>
         </div>
+        {#each group.users.filter(x => x.meta.book === b) as u, i}
+          <div class="rounded p-2 my-2 transition-all shadow hover:shadow-md bg-white">
+            <div class="flex items-center">
+              <AIcon path={mdiAccountOutline} size="1.5rem" color="rgb(55 65 81)" />
+              <span class="ml-2">{u.name}</span>
+              {#if group.admin === data.user.id && u._id !== data.user.id}
+                <button class="ml-2" on:click={() => removeUser(i)} on:keypress={() => removeUser(i)}>
+                  <AIcon path={mdiTrashCanOutline} size="1.25rem" color="rgb(252 165 165)" />
+                </button>
+              {/if}
+            </div>
+            <h2 class="font-mono m-2 text-sm text-gray-500">
+              <b class="text-4xl text-black">{u.meta.count || 0}</b>/{u.meta.bookCount || 'NaN'}
+              <b class="text-3xl ml-4 text-black">{(u.meta.power || 0).toFixed(1)}</b>power
+            </h2>
+            <code class="block mx-2 text-xs text-gray-300">{u.meta.time ? moment(u.meta.time).format('YYYY-MM-DD HH:mm:ss') : 'No Record'}</code>
+          </div>
+        {/each}
       {/each}
     </div>
     {#if group.admin === data.user.id}
