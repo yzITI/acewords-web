@@ -102,11 +102,12 @@
 
   async function complete () {
     await swal.fire('任务完成', '记得多回来复习哦！', 'success')
-    // compute power
+    // compute meta
     const all = await model.pro.all()
     let sum = 0
     for (const p of all) sum += model.power(p.step)
     meta.power = sum
+    meta.count = all.length
     meta.time = Date.now()
     LS.meta = JSON.stringify(meta)
     goto('/home')
@@ -125,7 +126,7 @@
           {/each}
         </div>
       {:else}
-        <div class="my-6 text-center text-gray-500">说出单词释义<br>查看释义判断正误</div>
+        <div class="my-6 text-center text-gray-500">说出单词释义<br>查看释义判断正误<br>要坚持完成整个学习任务哦</div>
       {/if}
     </div>
     <div class="flex items-center justify-between my-4 font-bold text-lg w-full" style="max-width: 400px;">
@@ -137,5 +138,7 @@
       {/if}
     </div>
   {/if}
-  <code class="fixed top-2 right-2 text-xs text-gray-500">new: {newIDs.length}/{data.newWordsNumber}</code>
+  {#if data.newWordsNumber}
+    <code class="fixed top-2 right-2 text-xs text-gray-500">new: {newIDs.length}/{data.newWordsNumber}</code>
+  {/if}
 </div>

@@ -97,7 +97,10 @@
         <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
         <b class="ml-1">{meta.bookName || '请选择单词书'}</b>
       </div>
-      <h2 class="font-mono m-2"><b class="text-4xl">{(meta.power || 0).toFixed(1)}</b>/{meta.bookCount || 'NaN'}</h2>
+      <h2 class="font-mono m-2 text-sm text-gray-500">
+        <b class="text-4xl text-black">{meta.count || 0}</b>/{meta.bookCount || 'NaN'}
+        <b class="text-3xl ml-4 text-black">{(meta.power || 0).toFixed(1)}</b>power
+      </h2>
       <code class="block mx-2 text-xs text-gray-300">{meta.time ? moment(meta.time).format('YYYY-MM-DD HH:mm:ss') : 'No Record'}</code>
       {#if meta.book}
         <div class="items-stretch flex items-center mt-2">
