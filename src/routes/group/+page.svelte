@@ -1,6 +1,6 @@
 <script>
   import { goto } from '$app/navigation'
-  import { mdiAccountGroupOutline, mdiPlus } from '@mdi/js'
+  import { mdiAccountGroupOutline, mdiPlus, mdiChevronLeft } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
   import { loading } from '$lib/stores.js'
   import srpc from '$lib/srpc.js'
@@ -32,8 +32,11 @@
 </script>
 
 <div class="min-h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
-  <h1 class="text-3xl">我的小组</h1>
-  <p class="text-gray-500 text-sm">和朋友们一起背单词吧！</p>
+  <h1 class="text-2xl font-bold flex items-center">
+    <button class="transition-all pl-2 hover:pr-2 hover:pl-0" on:click={() => goto('/home')}><AIcon path={mdiChevronLeft} size="2.5rem" /></button>
+    <span class="text-3xl">我的小组</span>
+  </h1>
+  <p class="text-gray-400 text-sm ml-12">和朋友们一起背单词吧！</p>
   <div class="mt-6 text-lg font-bold text-gray-700 select-none">
     {#each groups as g}
       <div class="rounded p-2 my-2 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:keypress={() => goto('/group/' + g._id)} on:click={() => goto('/group/' + g._id)}>

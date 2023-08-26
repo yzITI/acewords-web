@@ -93,7 +93,7 @@
   <p class="text-gray-500 text-sm">Ace your words in a simple but powerful way!</p>
   <div class="my-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 select-none">
     <div class="rounded border bg-white flex flex-col p-2">
-      <div class="flex items-center" on:keypress={book} on:click={book}>
+      <div class="flex items-center cursor-pointer" on:keypress={book} on:click={book}>
         <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
         <b class="ml-1">{meta.bookName || '请选择单词书'}</b>
       </div>
