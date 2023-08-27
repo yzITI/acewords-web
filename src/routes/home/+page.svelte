@@ -29,8 +29,8 @@
     }
     LS.user = data.user.id
     const remote = await srpc.user.getMeta(data.user.token)
-    origin.power = (remote.meta?.power || 0) - (remote.powerDelta || remote.meta?.power || 0)
-    origin.count = (remote.meta?.count || 0) - (remote.countDelta || remote.meta?.count || 0)
+    origin.power = (remote.power || 0) - (remote.powerDelta || remote.power || 0)
+    origin.count = (remote.count || 0) - (remote.countDelta || remote.count || 0)
     origin = origin
     delete remote.powerDelta
     delete remote.countDelta
