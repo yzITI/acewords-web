@@ -55,15 +55,11 @@
   if (!data.user) goto('/')
   else init()
 
-  let audio
-  function play (word) {
-    if (audio) audio.pause()
-    audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${word || current.word}&type=1`)
-    audio.play()
-    return new Promise((resolve, reject) => {
-      audio.onended = resolve
-      audio.onerror = reject
-    })
+  let audio = new Audio()
+  audio.autoplay = true
+  function play () {
+    audio.pause()
+    audio.src = `https://dict.youdao.com/dictvoice?audio=${current.word}&type=1`
   }
 
   let show = false
@@ -71,18 +67,10 @@
   let current = {}
   let currentPro = {}
 
-  async function start () {
-    try {
-      await play('Welcome to acewords')
-    } catch {}
-    await new Promise(r => setTimeout(r, 500))
-    cover = false
-    next()
-  }
-
   async function next () {
     current = {}
     show = false
+    cover = false
     // find review
     currentPro = await model.pro.first()
     if (currentPro && currentPro.due <= model.time()) {
@@ -157,7 +145,7 @@
   {/if}
 </div>
 {#if cover}
-  <div transition:fade class="fixed w-screen h-screen bg-gray-100 top-0 left-0 flex items-center justify-center" on:click={start} on:keypress={start}>
+  <div transition:fade class="fixed w-screen h-screen bg-gray-100 top-0 left-0 flex items-center justify-center" on:click={next} on:keypress={next}>
     <p>轻触屏幕开始学习单词</p>
   </div>
 {/if}
