@@ -10,6 +10,12 @@
   export let data
   
   const LS = window.localStorage
+  let origin = { power: 0, count: 0 }
+  let delta = { count: 0, power: 0 }
+  $: delta = {
+    count: (meta.count || 0) - origin.count,
+    power: ((meta.power || 0) - origin.power).toFixed(1)
+  }
   let meta = JSON.parse(LS.meta || '{}')
   let hasReview = false
 
@@ -23,6 +29,11 @@
     }
     LS.user = data.user.id
     const remote = await srpc.user.getMeta(data.user.token)
+    origin.power = (remote.meta?.power || 0) - (remote.powerDelta || remote.meta?.power || 0)
+    origin.count = (remote.meta?.count || 0) - (remote.countDelta || remote.meta?.count || 0)
+    origin = origin
+    delete remote.powerDelta
+    delete remote.countDelta
     const local = JSON.parse(LS.meta || '{}')
     if ((remote.time || 0) > (local.time || 0)) { // update local
       const full = await srpc.user.get(data.user.token)
@@ -97,10 +108,18 @@
         <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
         <b class="ml-1">{meta.bookName || '请选择单词书'}</b>
       </div>
-      <h2 class="font-mono m-2 text-sm text-gray-500">
-        <b class="text-4xl text-black">{meta.count || 0}</b>/{meta.bookCount || 'NaN'}
-        <b class="text-3xl ml-4 text-black">{(meta.power || 0).toFixed(1)}</b>power
-      </h2>
+      <div class="font-mono m-2 flex">
+        <b class="text-4xl">{meta.count || 0}</b>
+        <div class="flex flex-col justify-between text-xs">
+          <b>({(delta.count < 0 ? '' : '+') + delta.count})</b>
+          <span class="text-gray-500">/{meta.bookCount || 'NaN'}</span>
+        </div>
+        <b class="text-4xl ml-4">{(meta.power || 0).toFixed(1)}</b>
+        <div class="flex flex-col justify-between text-xs">
+          <b>({(delta.power < 0 ? '' : '+') + delta.power})</b>
+          <span class="text-gray-500">词力</span>
+        </div>
+      </div>
       <code class="block mx-2 text-xs text-gray-300">{meta.time ? moment(meta.time).format('YYYY-MM-DD HH:mm:ss') : 'No Record'}</code>
       {#if meta.book}
         <div class="items-stretch flex items-center mt-2">
