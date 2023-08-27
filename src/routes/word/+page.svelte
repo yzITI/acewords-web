@@ -4,6 +4,7 @@
   import swal from 'sweetalert2'
   import model from '$lib/model.js'
   import { loading } from '$lib/stores.js'
+  import { fade } from 'svelte/transition'
 
   export let data
   const LS = window.localStorage
@@ -49,22 +50,35 @@
     const libRes = await srpc.word.get(needs)
     await model.lib.put(libRes)
     $loading = false
-    next()
   }
 
   if (!data.user) goto('/')
   else init()
 
   let audio
-  function play () {
+  function play (word) {
     if (audio) audio.pause()
-    audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${current.word}&type=1`)
+    audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${word || current.word}&type=1`)
     audio.play()
+    return new Promise((resolve, reject) => {
+      audio.onended = resolve
+      audio.onerror = reject
+    })
   }
 
   let show = false
+  let cover = true
   let current = {}
   let currentPro = {}
+
+  async function start () {
+    try {
+      await play('Welcome to acewords')
+    } catch {}
+    await new Promise(r => setTimeout(r, 500))
+    cover = false
+    next()
+  }
 
   async function next () {
     current = {}
@@ -126,7 +140,7 @@
           {/each}
         </div>
       {:else}
-        <div class="my-6 text-center text-gray-500">说出单词释义<br>查看释义判断正误<br>要坚持完成整个学习任务哦</div>
+        <div class="my-6 text-center text-gray-500">跟读单词<br>说出单词释义<br>查看释义判断正误<br>要坚持完成整个学习任务哦</div>
       {/if}
     </div>
     <div class="flex items-center justify-between my-4 font-bold text-lg w-full" style="max-width: 400px;">
@@ -142,3 +156,8 @@
     <code class="fixed top-2 right-2 text-xs text-gray-500">new: {newIDs.length}/{data.newWordsNumber}</code>
   {/if}
 </div>
+{#if cover}
+  <div transition:fade class="fixed w-screen h-screen bg-gray-100 top-0 left-0 flex items-center justify-center" on:click={start} on:keypress={start}>
+    <p>轻触屏幕开始学习单词</p>
+  </div>
+{/if}
