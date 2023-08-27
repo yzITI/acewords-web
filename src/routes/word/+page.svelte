@@ -87,7 +87,7 @@
     currentPro = await model.pro.first()
     if (currentPro && currentPro.due <= model.time()) {
       current = await model.lib.get(id2_id(currentPro.id))
-      return play()
+      return await play()
     }
     // new word
     const newID = newIDs.shift()
@@ -95,12 +95,12 @@
     if (newID) {
       currentPro = { id: newID, step: 0, time: model.time(), due: model.time() }
       current = await model.lib.get(id2_id(newID))
-      return play()
+      return await play()
     }
     // find review loosely
     if (currentPro && currentPro.due <= model.time() + 25) {
       current = await model.lib.get(id2_id(currentPro.id))
-      return play()
+      return await play()
     }
     complete()
   }
@@ -111,7 +111,7 @@
     currentPro.time = model.time()
     currentPro.due = currentPro.time + model.stepTime[currentPro.step]
     await model.pro.put(currentPro)
-    next()
+    await next()
   }
 
   async function complete () {
