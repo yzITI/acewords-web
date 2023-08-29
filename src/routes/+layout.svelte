@@ -3,6 +3,9 @@
   import loadingImg from '$lib/images/loading.svg'
   import { loading } from '$lib/stores.js'
   import { fade } from 'svelte/transition'
+  import { pwaInfo } from 'virtual:pwa-info'
+
+  $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 </script>
 
 <svelte:head>
@@ -15,6 +18,7 @@
   <meta property="og:image" content="https://acewords.yzzx.tech/logo.svg">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#4980e9">
+  {@html webManifestLink} 
 </svelte:head>
 
 <slot></slot>
