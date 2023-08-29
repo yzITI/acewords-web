@@ -10,6 +10,9 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <meta property="og:url" content="https://acewords.yzzx.tech">
+  <meta property="og:title" content="Acewords">
+  <meta property="og:image" content="https://acewords.yzzx.tech/logo.svg">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#4980e9">
 </svelte:head>
