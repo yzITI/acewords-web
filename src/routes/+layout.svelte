@@ -4,6 +4,11 @@
   import { loading } from '$lib/stores.js'
   import { fade } from 'svelte/transition'
   import { pwaInfo } from 'virtual:pwa-info'
+  import { registerSW } from 'virtual:pwa-register'
+
+  const updateSW = registerSW({
+    onOfflineReady () {}
+  })
 
   $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 </script>
