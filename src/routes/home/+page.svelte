@@ -1,6 +1,6 @@
 <script>
   import { goto } from '$app/navigation'
-  import { mdiBookOutline, mdiAccountGroupOutline, mdiLogout } from '@mdi/js'
+  import { mdiBookOutline, mdiAccountGroupOutline, mdiInformationOutline, mdiLogout } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
   import { loading } from '$lib/stores.js'
   import srpc from '$lib/srpc.js'
@@ -132,6 +132,10 @@
       <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:keypress={() => goto('/group')} on:click={() => goto('/group')}>
         <AIcon path={mdiAccountGroupOutline} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">我的小组</b>
+      </div>
+      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white my-2" on:keypress={() => goto('/about')} on:click={() => goto('/about')}>
+        <AIcon path={mdiInformationOutline} size="2rem" color="rgb(55 65 81)" />
+        <b class="ml-2">关于Acewords</b>
       </div>
     </div>
   </div>
