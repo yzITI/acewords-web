@@ -39,7 +39,6 @@
       const full = await srpc.user.get(data.user.token)
       await model.import(full.data)
       LS.meta = JSON.stringify(full.meta)
-      if (remote.book !== local.book) LS.removeItem('book')
       meta = remote
     }
     if ((remote.time || 0) < (local.time || 0)) { // update remote

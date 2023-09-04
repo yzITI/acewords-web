@@ -27,8 +27,8 @@
     meta = JSON.parse(LS.meta || '{}')
     if (!meta.book) return goto('/home')
     // fetch book with cache
-    if (LS.book) book = JSON.parse(LS.book)
-    else { // fetch
+    book = JSON.parse(LS.book || '{}')
+    if (book._id !== meta.book) {
       book = await srpc.book.get(meta.book)
       if (!book.words) return goto('/')
       LS.book = JSON.stringify(book)
@@ -51,8 +51,10 @@
       if (await model.lib.get(_id)) continue
       needs.push(_id)
     }
-    const libRes = await srpc.word.get(needs)
-    await model.lib.put(libRes)
+    if (needs.length) {
+      const libRes = await srpc.word.get(needs)
+      await model.lib.put(libRes)
+    }
     $loading = false
   }
 

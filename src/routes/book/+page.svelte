@@ -33,7 +33,6 @@
       bookCount: b.count
     }
     await srpc.user.put(data.user.token, '', meta)
-    window.localStorage.removeItem('book')
     $loading = false
     await swal.fire('选择成功', `您已选择${b.name}`, 'success')
     goto('/')
