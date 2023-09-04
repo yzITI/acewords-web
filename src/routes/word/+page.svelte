@@ -26,9 +26,13 @@
   async function init () {
     meta = JSON.parse(LS.meta || '{}')
     if (!meta.book) return goto('/home')
-    // fetch book
-    book = await srpc.book.get(meta.book)
-    if (!book.words) return goto('/')
+    // fetch book with cache
+    if (LS.book) book = JSON.parse(LS.book)
+    else { // fetch
+      book = await srpc.book.get(meta.book)
+      if (!book.words) return goto('/')
+      LS.book = JSON.stringify(book)
+    }
     // get new words
     const old = await model.pro.all(true)
     const ids = Object.keys(book.words).map(x => Number(x))
@@ -99,19 +103,13 @@
     currentPro.time = model.time()
     currentPro.due = currentPro.time + model.stepTime[currentPro.step]
     await model.pro.put(currentPro)
+    meta.time = Date.now()
+    LS.meta = JSON.stringify(meta)
     await next()
   }
 
   async function complete () {
     await swal.fire('任务完成', '记得多回来复习哦！', 'success')
-    // compute meta
-    const all = await model.pro.all()
-    let sum = 0
-    for (const p of all) sum += model.power(p.step)
-    meta.power = sum
-    meta.count = all.length
-    meta.time = Date.now()
-    LS.meta = JSON.stringify(meta)
     goto('/home')
   }
 </script>

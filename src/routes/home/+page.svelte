@@ -39,11 +39,19 @@
       const full = await srpc.user.get(data.user.token)
       await model.import(full.data)
       LS.meta = JSON.stringify(full.meta)
+      if (remote.book !== local.book) LS.removeItem('book')
       meta = remote
     }
     if ((remote.time || 0) < (local.time || 0)) { // update remote
+      // compute count and power
+      const all = await model.pro.all()
+      let sum = 0
+      for (const p of all) sum += model.power(p.step)
+      local.power = sum
+      local.count = all.length
       await srpc.user.put(data.user.token, await model.export(), local)
       meta = local
+      LS.meta = JSON.stringify(meta)
     }
     $loading = false
   }
