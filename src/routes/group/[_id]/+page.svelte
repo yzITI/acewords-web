@@ -71,7 +71,7 @@
 
 <div class="min-h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
   {#if group?._id}
-    <h1 class="text-2xl font-bold flex items-center">
+    <h1 class="text-2xl font-bold flex items-center select-none">
       <button class="transition-all pl-2 hover:pr-2 hover:pl-0" on:click={() => goto('/group')}><AIcon path={mdiChevronLeft} size="2.5rem" /></button>
       <AIcon path={mdiAccountGroupOutline} size="2rem" />
       <input class="bg-transparent border-none outline-none ml-2 w-full" bind:value={group.name} disabled={group.admin !== data.user.id}>

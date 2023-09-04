@@ -32,7 +32,7 @@
 </script>
 
 <div class="min-h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
-  <h1 class="text-2xl font-bold flex items-center">
+  <h1 class="text-2xl font-bold flex items-center select-none">
     <button class="transition-all pl-2 hover:pr-2 hover:pl-0" on:click={() => goto('/home')}><AIcon path={mdiChevronLeft} size="2.5rem" /></button>
     <span class="text-3xl">我的小组</span>
   </h1>
