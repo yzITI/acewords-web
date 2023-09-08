@@ -7,7 +7,8 @@
   import { fade } from 'svelte/transition'
 
   export let data
-  const LS = window.localStorage
+  const LS = window.localStorage, SS = window.sessionStorage
+  let totalCount = NaN
   let book = {}
   let meta = {}
   let newIDs = []
@@ -44,6 +45,8 @@
       cot--
       newIDs.push(id)
     }
+    newIDs = newIDs
+    SS.new = newIDs.length
     // fetch lib: all new & old ids
     const _ids = [...new Set([...old, ...newIDs])].map(id2_id)
     const needs = []
@@ -58,7 +61,9 @@
     $loading = false
   }
 
+  $loading = true
   if (!data.user) goto('/')
+  else if (SS.new > 0 && SS.new != data.newWordsNumber) goto('/word?new=' + SS.new)
   else init()
 
   let audio = new Audio()
@@ -77,6 +82,7 @@
     current = {}
     show = false
     cover = false
+    totalCount = await model.pro.dueCount(model.time() + 25) + newIDs.length
     // find review
     currentPro = await model.pro.first()
     if (currentPro && currentPro.due <= model.time()) {
@@ -107,6 +113,7 @@
     await model.pro.put(currentPro)
     meta.time = Date.now()
     LS.meta = JSON.stringify(meta)
+    SS.new = newIDs.length
     await next()
   }
 
@@ -140,6 +147,7 @@
       {/if}
     </div>
   {/if}
+  <code class="fixed top-2 left-2 text-xs text-gray-500">total: {totalCount}</code>
   {#if data.newWordsNumber}
     <code class="fixed top-2 right-2 text-xs text-gray-500">new: {newIDs.length}/{data.newWordsNumber}</code>
   {/if}

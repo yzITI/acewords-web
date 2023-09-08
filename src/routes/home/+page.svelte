@@ -9,7 +9,7 @@
   import moment from 'moment'
   export let data
   
-  const LS = window.localStorage
+  const LS = window.localStorage, SS = window.sessionStorage
   let origin = { power: 0, count: 0 }
   let delta = { count: 0, power: 0 }
   $: delta = {
@@ -78,6 +78,7 @@
 
   function start (newWordsNumber) {
     $loading = '背单词要对自己负责哦！'
+    SS.removeItem('new')
     if (newWordsNumber) goto('/word?new=' + newWordsNumber)
     else goto('/word')
   }

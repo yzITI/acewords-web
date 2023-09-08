@@ -28,6 +28,7 @@ export const model = {
       ? DB.pro.toCollection().primaryKeys()
       : DB.pro.toArray(),
     due: d => DB.pro.where('due').below(d).sortBy('due'),
+    dueCount: d => DB.pro.where('due').below(d).count(),
     after: d => DB.pro.where('time').above(d).sortBy('time'),
     first: () => DB.pro.orderBy('due').first(),
     clear: () => DB.pro.clear()
