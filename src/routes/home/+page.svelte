@@ -1,6 +1,6 @@
 <script>
   import { goto } from '$app/navigation'
-  import { mdiBookOutline, mdiAccountGroupOutline, mdiInformationOutline, mdiLogout } from '@mdi/js'
+  import { mdiBookOutline, mdiAccountGroupOutline, mdiInformationOutline, mdiPoll, mdiLogout } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
   import { loading } from '$lib/stores.js'
   import srpc from '$lib/srpc.js'
@@ -119,12 +119,12 @@
       <div class="font-mono m-2 flex">
         <b class="text-4xl">{meta.count || 0}</b>
         <div class="flex flex-col justify-between text-xs">
-          <b>({(delta.count < 0 ? '' : '+') + delta.count})</b>
+          <b>{(delta.count < 0 ? '' : '+') + delta.count}</b>
           <span class="text-gray-500">/{meta.bookCount || 'NaN'}</span>
         </div>
         <b class="text-4xl ml-4">{(meta.power || 0).toFixed(1)}</b>
         <div class="flex flex-col justify-between text-xs">
-          <b>({(delta.power < 0 ? '' : '+') + delta.power})</b>
+          <b>{(delta.power < 0 ? '' : '+') + delta.power}</b>
           <span class="text-gray-500">词力</span>
         </div>
       </div>
@@ -141,7 +141,11 @@
         <AIcon path={mdiAccountGroupOutline} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">我的小组</b>
       </div>
-      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white my-2" on:keypress={() => goto('/about')} on:click={() => goto('/about')}>
+      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white mt-2" on:keypress={() => goto('/progress')} on:click={() => goto('/progress')}>
+        <AIcon path={mdiPoll} size="2rem" color="rgb(55 65 81)" />
+        <b class="ml-2">单词进度</b>
+      </div>
+      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white mt-2" on:keypress={() => goto('/about')} on:click={() => goto('/about')}>
         <AIcon path={mdiInformationOutline} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">关于Acewords</b>
       </div>

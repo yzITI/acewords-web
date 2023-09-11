@@ -96,12 +96,12 @@
             <div class="font-mono m-2 flex">
               <b class="text-4xl">{u.meta.count || 0}</b>
               <div class="flex flex-col justify-between text-xs">
-                <b>({(u.meta.countDelta < 0 ? '' : '+') + (u.meta.countDelta || 0)})</b>
+                <b>{(u.meta.countDelta < 0 ? '' : '+') + (u.meta.countDelta || 0)}</b>
                 <span class="text-gray-500">/{u.meta.bookCount || 'NaN'}</span>
               </div>
               <b class="text-4xl ml-4">{(u.meta.power || 0).toFixed(1)}</b>
               <div class="flex flex-col justify-between text-xs">
-                <b>({(u.meta.powerDelta < 0 ? '' : '+') + u.meta.powerDelta.toFixed(1)})</b>
+                <b>{(u.meta.powerDelta < 0 ? '' : '+') + u.meta.powerDelta.toFixed(1)}</b>
                 <span class="text-gray-500">词力</span>
               </div>
             </div>
