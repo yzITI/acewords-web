@@ -1,6 +1,6 @@
 <script>
   import { goto } from '$app/navigation'
-  import { mdiBookOutline, mdiAccountGroupOutline, mdiInformationOutline, mdiPoll, mdiLogout } from '@mdi/js'
+  import { mdiBookOutline, mdiAccountGroupOutline, mdiInformationOutline, mdiPoll, mdiCog, mdiLogout } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
   import { loading } from '$lib/stores.js'
   import srpc from '$lib/srpc.js'
@@ -145,14 +145,23 @@
         <AIcon path={mdiPoll} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">单词进度</b>
       </div>
-      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white mt-2" on:keypress={() => goto('/about')} on:click={() => goto('/about')}>
+    </div>
+    <div class="flex flex-col my-4 lg:my-0 lg:mx-4">
+      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:keypress={() => goto('/about')} on:click={() => goto('/about')}>
         <AIcon path={mdiInformationOutline} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">关于Acewords</b>
       </div>
     </div>
   </div>
-  <button class="mt-2 mb-10 flex items-center text-gray-500 font-bold" on:click={signout} on:keypress={signout}>
-    <AIcon path={mdiLogout} size="1.5rem" color="rgb(107 114 128)" />
-    <span class="ml-1">Sign out</span>
-  </button>
+  <div class="mt-2 mb-10 flex items-center">
+    <button class="flex items-center text-gray-500 font-bold" on:click={() => goto('/settings')} on:keypress={() => goto('/settings')}>
+      <AIcon path={mdiCog} size="1.5rem" color="rgb(107 114 128)" />
+      <span class="ml-1">Settings</span>
+    </button>
+    <button class="ml-10 flex items-center text-gray-500 font-bold" on:click={signout} on:keypress={signout}>
+      <AIcon path={mdiLogout} size="1.5rem" color="rgb(107 114 128)" />
+      <span class="ml-1">Sign out</span>
+    </button>
+  </div>
+  
 </div>

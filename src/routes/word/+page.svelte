@@ -8,6 +8,7 @@
 
   export let data
   const LS = window.localStorage, SS = window.sessionStorage
+  let settings = JSON.parse(LS.settings || '{}')
   let totalCount = NaN
   let book = {}
   let meta = {}
@@ -129,11 +130,25 @@
       <h2 class="text-4xl font-bold" on:click={play} on:keypress={play}>{current.word}</h2>
       <p class="italic text-gray-700 my-2" on:click={play} on:keypress={play}>/{current.phonetic}/</p>
       {#if show}
-        <div class="w-full border bg-white rounded p-2 my-6 transition-all">
+        <div class="w-full border bg-white rounded p-2 mt-6 transition-all">
           {#each current.translation as t}
             <p class="m-1">{t}</p>
           {/each}
         </div>
+        {#if settings.definition && current.definition?.length}
+          <div class="w-full border bg-white rounded p-2 mt-3 transition-all">
+            {#each current.definition as d}
+              <p class="m-1 text-sm leading-tight">{d}</p>
+            {/each}
+          </div>
+        {/if}
+        {#if settings.exchange && current.exchange?.length}
+          <div class="w-full border bg-white rounded p-2 mt-3 transition-all flex flex-wrap">
+            {#each current.exchange as e}
+              <div class="m-1 text-sm leading-tight">{e}</div>
+            {/each}
+          </div>
+        {/if}
       {:else}
         <div class="my-6 text-center text-gray-500">跟读单词<br>说出单词释义<br>查看释义判断正误<br>要坚持完成整个学习任务哦</div>
       {/if}
