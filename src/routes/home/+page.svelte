@@ -112,10 +112,10 @@
   <p class="text-gray-500 text-sm">Ace your words in a simple but powerful way!</p>
   <div class="my-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 select-none">
     <div class="rounded border bg-white flex flex-col p-2">
-      <div class="flex items-center cursor-pointer" on:keypress={book} on:click={book}>
+      <button class="flex items-center" on:keypress={book} on:click={book}>
         <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
         <b class="ml-1">{meta.bookName || '请选择单词书'}</b>
-      </div>
+      </button>
       <div class="font-mono m-2 flex">
         <b class="text-4xl">{meta.count || 0}</b>
         <div class="flex flex-col justify-between text-xs">
@@ -137,20 +137,20 @@
       {/if}
     </div>
     <div class="flex flex-col my-4 sm:my-0 sm:mx-4">
-      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:keypress={() => goto('/group')} on:click={() => goto('/group')}>
+      <button class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md flex items-center bg-white" on:keypress={() => goto('/group')} on:click={() => goto('/group')}>
         <AIcon path={mdiAccountGroupOutline} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">我的小组</b>
-      </div>
-      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white mt-2" on:keypress={() => goto('/progress')} on:click={() => goto('/progress')}>
+      </button>
+      <button class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md flex items-center bg-white mt-2" on:keypress={() => goto('/progress')} on:click={() => goto('/progress')}>
         <AIcon path={mdiPoll} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">单词进度</b>
-      </div>
+      </button>
     </div>
     <div class="flex flex-col my-4 lg:my-0 lg:mx-4">
-      <div class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md cursor-pointer flex items-center bg-white" on:keypress={() => goto('/about')} on:click={() => goto('/about')}>
+      <button class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md flex items-center bg-white" on:keypress={() => goto('/about')} on:click={() => goto('/about')}>
         <AIcon path={mdiInformationOutline} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">关于Acewords</b>
-      </div>
+      </button>
     </div>
   </div>
   <div class="mt-2 mb-10 flex items-center">

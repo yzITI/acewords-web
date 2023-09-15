@@ -1,7 +1,7 @@
 <script>
   import { goto } from '$app/navigation'
   import { mdiCogOutline, mdiChevronLeft } from '@mdi/js'
-  import { AIcon } from 'ace.svelte'
+  import { AIcon, ASwitch } from 'ace.svelte'
 
   const LS = window.localStorage
   let settings = JSON.parse(LS.settings || '{}')
@@ -19,11 +19,11 @@
   <div class="px-2 text-gray-700 select-none">
     <div class="flex items-center">
       <span class="m-2">显示单词原始定义</span>
-      <input type="checkbox" bind:checked={settings.definition}>
+      <ASwitch bind:value={settings.definition} />
     </div>
     <div class="flex items-center">
       <span class="m-2">显示单词变形</span>
-      <input type="checkbox" bind:checked={settings.exchange}>
+      <ASwitch bind:value={settings.exchange} />
     </div>
   </div>
 </div>
