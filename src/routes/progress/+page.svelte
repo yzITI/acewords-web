@@ -13,12 +13,17 @@
   let total = 0
 
   const stepTimeDescription = ['0s', '10s', '30s', '2m', '5m', '30m', '12h', '1d', '2d', '4d', '7d', '15d', '1M', '2M', '3M', '6M', 'INF']
-  let distribution = JSON.parse(JSON.stringify(model.stepTime)).map(x => 0)
+  let distribution = JSON.parse(JSON.stringify(model.stepTime)).map(x => [0, 0, 0])
   async function computeDistribution () {
     const all = await model.pro.all()
-    for (const w of all) distribution[w.step]++
+    for (const w of all) {
+      total++
+      distribution[w.step][0]++
+      if (w.due < model.time() + 2 * 86400) distribution[w.step][1]++
+      if (w.due < model.time() + 86400) distribution[w.step][2]++
+    }
     distribution = distribution
-    total = distribution.reduce((a, b) => a + b)
+    total = total
   }
   if (meta.book) computeDistribution()
 </script>
@@ -29,7 +34,6 @@
     <span class="text-3xl">单词进度</span>
   </h1>
   {#if meta.book}
-    <p class="text-gray-400 text-sm ml-12">单词复现周期统计</p>
     <div class="rounded border bg-white flex flex-col p-2 m-4" style="max-width: 400px;">
       <div class="flex items-center">
         <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
@@ -49,17 +53,21 @@
       </div>
       <code class="block mx-2 text-xs text-gray-300">{meta.time ? moment(meta.time).format('YYYY-MM-DD HH:mm:ss') : 'No Record'}</code>
     </div>
+    <h3 class="mx-4 font-bold text-lg">单词进度统计</h3>
+    <p class="mx-4 text-xs text-gray-500">单词复现周期统计：24h内复习为红色，48h内复习为黄色</p>
     <div class="border m-4 rounded overflow-hidden">
-      <div class="w-full h-6 bg-white relative flex items-center">
-        <div class="absolute left-1 text-xs font-bold">Timing</div>
-        <div class="absolute right-1 text-xs font-bold">Count</div>
+      <div class="w-full h-6 bg-white relative flex items-center justify-between">
+        <div class="text-xs font-bold mx-1">Timing</div>
+        <div class="text-xs font-bold mx-1">Count</div>
       </div>
       {#each distribution as cot, step}
-        <div class="w-full h-6 bg-white border-t relative flex items-center">
-          <div class="bg-blue-200 h-full" style={`width: ${100 * cot / total}%;`}></div>
-          <code class="absolute left-1 text-xs font-bold">{stepTimeDescription[step]}</code>
-          {#if cot}
-            <code class="absolute right-1 text-xs">({(100 * cot / total).toFixed(1)}%) <b>{cot}</b></code>
+        <div class="w-full h-6 bg-white border-t relative flex items-center justify-between">
+          <div class="absolute left-0 top-0 bg-blue-200 h-full" style={`width: ${100 * cot[0] / total}%;`}></div>
+          <div class="absolute left-0 top-0 bg-yellow-200 h-full" style={`width: ${100 * cot[1] / total}%;`}></div>
+          <div class="absolute left-0 top-0 bg-red-200 h-full" style={`width: ${100 * cot[2] / total}%;`}></div>
+          <code class="z-0 text-xs font-bold mx-1">{stepTimeDescription[step]}</code>
+          {#if cot[0]}
+            <code class="z-0 text-xs mx-1">({(100 * cot[0] / total).toFixed(1)}%) <b>{cot[0]}</b></code>
           {/if}
         </div>
       {/each}
