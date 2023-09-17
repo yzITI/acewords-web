@@ -150,7 +150,7 @@
           </div>
         {/if}
       {:else}
-        <div class="my-6 text-center text-gray-500">跟读单词<br>说出单词释义<br>查看释义判断正误<br>要坚持完成整个学习任务哦</div>
+        <div class="my-6 text-center text-gray-500">跟读单词<br>说出单词释义<br>查看释义判断正误</div>
       {/if}
     </div>
     <div class="flex items-center justify-between my-4 font-bold text-lg w-full" style="max-width: 400px;">
