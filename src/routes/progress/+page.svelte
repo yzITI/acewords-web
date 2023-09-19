@@ -11,10 +11,10 @@
   const LS = window.localStorage
   let total = 0
   let meta = JSON.parse(LS.meta || '{}')
-  let statistics = JSON.parse(LS.statistics || '{}')
+  let statistics = JSON.parse(LS.statistics || '{"T":0,"F":0,"TTime":0,"FTime":0}')
   let TPercent = 0, FPercent = 0
-  $: TPercent = 100 * statistics.T / (statistics.T + statistics.F)
-  $: FPercent = 100 * statistics.F / (statistics.T + statistics.F)
+  $: TPercent = 100 * statistics.T / (statistics.T + statistics.F) || 0
+  $: FPercent = 100 * statistics.F / (statistics.T + statistics.F) || 0
 
   const stepTimeDescription = ['0s', '10s', '30s', '2m', '5m', '30m', '12h', '1d', '2d', '4d', '7d', '15d', '1M', '2M', '3M', '6M', 'INF']
   let distribution = JSON.parse(JSON.stringify(model.stepTime)).map(x => [0, 0, 0])
@@ -78,12 +78,13 @@
     </div>
     <h3 class="mx-4 font-bold text-lg">响应与时间统计</h3>
     <p class="mx-4 text-xs text-gray-500">数据仅来自本设备、本单词书</p>
-    <div class="m-4 h-8 bg-white rounded border flex text-xs">
-      <div class="bg-green-200 h-full overflow-hidden flex items-center justify-end font-mono" style:width={TPercent + '%'}>
+    <div class="m-4 h-8 bg-white rounded border flex items-center text-xs relative">
+      <p class="text-gray-500 absolute left-2">暂无响应统计数据</p>
+      <div class="bg-green-200 h-full overflow-hidden flex items-center justify-end font-mono relative" style:width={TPercent + '%'}>
         <b class="mx-1">{statistics.T}</b>
         ({TPercent.toFixed(1)}%)
       </div>
-      <div class="bg-red-200 h-full overflow-hidden flex items-center justify-start font-mono" style:width={FPercent + '%'}>
+      <div class="bg-red-200 h-full overflow-hidden flex items-center justify-start font-mono relative" style:width={FPercent + '%'}>
         ({FPercent.toFixed(1)}%)
         <b class="mx-1">{statistics.F}</b>
       </div>
