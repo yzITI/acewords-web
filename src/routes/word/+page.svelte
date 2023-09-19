@@ -83,7 +83,7 @@
     current = {}
     show = false
     cover = false
-    totalCount = await model.pro.dueCount(model.time() + 25) + newIDs.length
+    totalCount = await model.pro.dueCount(model.time() + 15) + newIDs.length
     // find review
     currentPro = await model.pro.first()
     if (currentPro && currentPro.due <= model.time()) {
@@ -99,7 +99,7 @@
       return await play()
     }
     // find review loosely
-    if (currentPro && currentPro.due <= model.time() + 25) {
+    if (currentPro && currentPro.due <= model.time() + 15) {
       current = await model.lib.get(id2_id(currentPro.id))
       return await play()
     }
