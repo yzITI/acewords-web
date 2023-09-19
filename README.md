@@ -9,5 +9,14 @@ LS.user // user id
 LS.token // user token
 LS.meta // local meta object
 LS.book // book cache
-LS.settings // settings
+LS.settings = { // settings
+  definition: Boolean,
+  exchange: Boolean
+}
+LS.statistics = {
+  T: Number,
+  F: Number,
+  TTime: Number, // time in ms
+  FTime: Number
+}
 ```

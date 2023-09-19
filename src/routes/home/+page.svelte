@@ -24,10 +24,12 @@
     if (data.user.id !== LS.user) { // different user
       await model.pro.clear()
       LS.removeItem('meta')
+      LS.removeItem('statistics')
       LS.removeItem('new')
       meta = {}
     }
     LS.user = data.user.id
+    // fetch remote meta and compute origin from delta
     const remote = await srpc.user.getMeta(data.user.token)
     origin.power = (remote.power || 0) - (remote.powerDelta || 0)
     origin.count = (remote.count || 0) - (remote.countDelta || 0)
@@ -35,6 +37,7 @@
     delete remote.powerDelta
     delete remote.countDelta
     const local = JSON.parse(LS.meta || '{}')
+    // compare and sync record
     if ((remote.time || 0) > (local.time || 0)) { // update local
       const full = await srpc.user.get(data.user.token)
       await model.import(full.data)

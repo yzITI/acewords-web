@@ -25,17 +25,18 @@
     })
     if (!isConfirmed) return
     $loading = true
-    const meta = {
+    const meta = { // new meta
       time: Date.now(),
       power: 0,
       book: b._id,
       bookName: b.name,
       bookCount: b.count
     }
-    await srpc.user.put(data.user.token, '', meta)
+    await srpc.user.put(data.user.token, '', meta) // Clear record in cloud, will be imported back to /home
+    window.localStorage.removeItem('statistics') // clear statistics
     $loading = false
     await swal.fire('选择成功', `您已选择${b.name}`, 'success')
-    goto('/')
+    goto('/home')
   }
 
   if (!data.user) goto('/')

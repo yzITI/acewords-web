@@ -1,6 +1,6 @@
 <script>
   import { goto } from '$app/navigation'
-  import { mdiChevronLeft, mdiBookOutline } from '@mdi/js'
+  import { mdiChevronLeft, mdiBookOutline, mdiClockOutline } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
   import { loading } from '$lib/stores.js'
   import srpc from '$lib/srpc.js'
@@ -9,8 +9,12 @@
   import moment from 'moment'
 
   const LS = window.localStorage
-  let meta = JSON.parse(LS.meta || '{}')
   let total = 0
+  let meta = JSON.parse(LS.meta || '{}')
+  let statistics = JSON.parse(LS.statistics || '{}')
+  let TPercent = 0, FPercent = 0
+  $: TPercent = 100 * statistics.T / (statistics.T + statistics.F)
+  $: FPercent = 100 * statistics.F / (statistics.T + statistics.F)
 
   const stepTimeDescription = ['0s', '10s', '30s', '2m', '5m', '30m', '12h', '1d', '2d', '4d', '7d', '15d', '1M', '2M', '3M', '6M', 'INF']
   let distribution = JSON.parse(JSON.stringify(model.stepTime)).map(x => [0, 0, 0])
@@ -28,7 +32,7 @@
   if (meta.book) computeDistribution()
 </script>
 
-<div class="min-h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
+<div class="min-h-screen w-full px-2 sm:px-10 py-10 bg-gray-100">
   <h1 class="text-2xl font-bold flex items-center select-none">
     <button class="transition-all pl-2 hover:pr-2 hover:pl-0" on:click={() => goto('/home')}><AIcon path={mdiChevronLeft} size="2.5rem" /></button>
     <span class="text-3xl">单词进度</span>
@@ -71,6 +75,39 @@
           {/if}
         </div>
       {/each}
+    </div>
+    <h3 class="mx-4 font-bold text-lg">响应与时间统计</h3>
+    <p class="mx-4 text-xs text-gray-500">数据仅来自本设备、本单词书</p>
+    <div class="m-4 h-8 bg-white rounded border flex text-xs">
+      <div class="bg-green-200 h-full overflow-hidden flex items-center justify-end font-mono" style:width={TPercent + '%'}>
+        <b class="mx-1">{statistics.T}</b>
+        ({TPercent.toFixed(1)}%)
+      </div>
+      <div class="bg-red-200 h-full overflow-hidden flex items-center justify-start font-mono" style:width={FPercent + '%'}>
+        ({FPercent.toFixed(1)}%)
+        <b class="mx-1">{statistics.F}</b>
+      </div>
+    </div>
+    <div class="rounded border bg-white flex flex-col p-2 m-4" style="max-width: 400px;">
+      <div class="flex items-center">
+        <AIcon path={mdiClockOutline} size="1.5rem" color="rgb(55 65 81)" />
+        <b class="ml-1">平均响应时间（秒）</b>
+      </div>
+      <div class="font-mono m-4 flex whitespace-nowrap">
+        <div class="flex flex-col justify-between items-end text-xs">
+          <b class="text-sm">{(statistics.TTime / statistics.T / 1000).toFixed(1)}</b>
+          <span class="text-green-500">正确</span>
+        </div>
+        <b class="text-4xl">{((statistics.TTime + statistics.FTime) / (statistics.T + statistics.F) / 1000).toFixed(1)}</b>
+        <div class="flex flex-col justify-between text-xs">
+          <b class="text-sm">{(statistics.FTime / statistics.F / 1000).toFixed(1)}</b>
+          <span class="text-red-500">错误</span>
+        </div>
+        <div class="flex flex-col items-center justify-center text-xs ml-10">
+          <b class="text-xl">{statistics.T + statistics.F}</b>
+          <span class="text-gray-500">统计总数</span>
+        </div>
+      </div>
     </div>
   {:else}
     <p class="m-4 text-gray-500">您还没有单词进度哦，去选择一本单词书开始学习吧！</p>

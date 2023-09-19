@@ -9,6 +9,7 @@
   export let data
   const LS = window.localStorage, SS = window.sessionStorage
   let settings = JSON.parse(LS.settings || '{}')
+  let statistics = JSON.parse(LS.statistics || '{"T":0,"F":0,"TTime":0,"FTime":0}')
   let totalCount = NaN
   let book = {}
   let meta = {}
@@ -48,7 +49,7 @@
     }
     newIDs = newIDs
     SS.new = newIDs.length
-    // fetch lib: all new & old ids
+    // fetch lib for needed words: all new & old ids
     const _ids = [...new Set([...old, ...newIDs])].map(id2_id)
     const needs = []
     for (const _id of _ids) {
@@ -64,7 +65,7 @@
 
   $loading = true
   if (!data.user) goto('/')
-  else if (SS.new > 0 && SS.new != data.newWordsNumber) goto('/word?new=' + SS.new)
+  else if (SS.new > 0 && SS.new != data.newWordsNumber) goto('/word?new=' + SS.new) // refresh with remaining new words
   else init()
 
   let audio = new Audio()
@@ -76,6 +77,7 @@
 
   let show = false
   let cover = true
+  let startTime = 0
   let current = {}
   let currentPro = {}
 
@@ -83,6 +85,7 @@
     current = {}
     show = false
     cover = false
+    startTime = Date.now() // start timing
     totalCount = await model.pro.dueCount(model.time() + 15) + newIDs.length
     // find review
     currentPro = await model.pro.first()
@@ -103,18 +106,30 @@
       current = await model.lib.get(id2_id(currentPro.id))
       return await play()
     }
-    complete()
+    complete() // no words left
   }
 
   async function response (r) {
+    const timing = Date.now() - startTime
+    // update statistics
+    if (r) {
+      statistics.T++
+      statistics.TTime += timing
+    } else {
+      statistics.F++
+      statistics.FTime += timing
+    }
+    LS.statistics = JSON.stringify(statistics)
+    // Update pro
     currentPro.step = r ? (currentPro.step + 1) : 1
     if (currentPro.step > 16) currentPro.step = 16
     currentPro.time = model.time()
     currentPro.due = currentPro.time + model.stepTime[currentPro.step]
     await model.pro.put(currentPro)
+    // Update meta
     meta.time = Date.now()
     LS.meta = JSON.stringify(meta)
-    SS.new = newIDs.length
+    SS.new = newIDs.length // save in case of refresh page
     await next()
   }
 
