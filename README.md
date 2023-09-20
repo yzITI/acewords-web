@@ -11,7 +11,8 @@ LS.meta // local meta object
 LS.book // book cache
 LS.settings = { // settings
   definition: Boolean,
-  exchange: Boolean
+  exchange: Boolean,
+  skip: Boolean
 }
 LS.statistics = {
   T: Number,

@@ -109,7 +109,7 @@
     complete() // no words left
   }
 
-  async function response (r) {
+  async function response (r, inc = 1) {
     const timing = Date.now() - startTime
     // update statistics
     if (r) {
@@ -121,7 +121,7 @@
     }
     LS.statistics = JSON.stringify(statistics)
     // Update pro
-    currentPro.step = r ? (currentPro.step + 1) : 1
+    currentPro.step = r ? (currentPro.step + inc) : 1
     if (currentPro.step > 16) currentPro.step = 16
     currentPro.time = model.time()
     currentPro.due = currentPro.time + model.stepTime[currentPro.step]
@@ -168,10 +168,15 @@
         <div class="my-6 text-center text-gray-500">跟读单词<br>说出单词释义<br>查看释义判断正误</div>
       {/if}
     </div>
-    <div class="flex items-center justify-between my-4 font-bold text-lg w-full" style="max-width: 400px;">
+    <div class="flex items-end justify-between my-4 font-bold text-lg w-full" style="max-width: 400px;">
       {#if show}
         <button on:click={() => response(false)} class="transition-all shadow hover:shadow-md rounded w-1/2 p-2 bg-red-500 text-white mx-2">错误</button>
-        <button on:click={() => response(true)} class="transition-all shadow hover:shadow-md rounded w-1/2 p-2 bg-green-500 text-white mx-2">正确</button>
+        <div class="flex flex-col items-center w-1/2">
+          {#if settings.skip}
+            <button on:click={() => response(true, 2)} class="transition-all hover:bg-gray-200 rounded py-2 px-4 text-yellow-500 mx-2 mb-4 text-base">跳过复习</button>
+          {/if}
+          <button on:click={() => response(true)} class="transition-all shadow hover:shadow-md rounded w-full p-2 bg-green-500 text-white mx-2">正确</button>
+        </div>
       {:else}
         <button on:click={() => show = true} class="transition-all shadow hover:shadow-md rounded w-full p-2 bg-blue-500 text-white">查看释义</button>
       {/if}
