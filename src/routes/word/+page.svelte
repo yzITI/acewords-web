@@ -9,7 +9,7 @@
   export let data
   const LS = window.localStorage, SS = window.sessionStorage
   let settings = JSON.parse(LS.settings || '{}')
-  let statistics = JSON.parse(LS.statistics || '{"T":0,"F":0,"TTime":0,"FTime":0}')
+  let statistics = JSON.parse(LS.statistics || '{"true":0,"false":0,"trueTime":0,"falseTime":0}')
   let totalCount = NaN
   let book = {}
   let meta = {}
@@ -111,15 +111,11 @@
 
   async function response (r, inc = 1) {
     const timing = Date.now() - startTime
-    // update statistics
-    if (r) {
-      statistics.T++
-      statistics.TTime += timing
-    } else {
-      statistics.F++
-      statistics.FTime += timing
+    if (timing < 60e3) {
+      statistics[r]++
+      statistics[r + 'Time'] += timing
+      LS.statistics = JSON.stringify(statistics)
     }
-    LS.statistics = JSON.stringify(statistics)
     // Update pro
     currentPro.step = r ? (currentPro.step + inc) : 1
     if (currentPro.step > 16) currentPro.step = 16

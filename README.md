@@ -15,9 +15,9 @@ LS.settings = { // settings
   skip: Boolean
 }
 LS.statistics = {
-  T: Number,
-  F: Number,
-  TTime: Number, // time in ms
-  FTime: Number
+  true: Number,
+  false: Number,
+  trueTime: Number, // time in ms
+  falseTime: Number
 }
 ```

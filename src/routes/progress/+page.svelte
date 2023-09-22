@@ -11,10 +11,10 @@
   const LS = window.localStorage
   let total = 0
   let meta = JSON.parse(LS.meta || '{}')
-  let statistics = JSON.parse(LS.statistics || '{"T":0,"F":0,"TTime":0,"FTime":0}')
+  let statistics = JSON.parse(LS.statistics || '{"true":0,"false":0,"trueTime":0,"falseTime":0}')
   let TPercent = 0, FPercent = 0
-  $: TPercent = 100 * statistics.T / (statistics.T + statistics.F) || 0
-  $: FPercent = 100 * statistics.F / (statistics.T + statistics.F) || 0
+  $: TPercent = 100 * statistics.true / (statistics.true + statistics.false) || 0
+  $: FPercent = 100 * statistics.false / (statistics.true + statistics.false) || 0
 
   const stepTimeDescription = ['0s', '10s', '30s', '2m', '5m', '30m', '12h', '1d', '2d', '4d', '7d', '15d', '1M', '2M', '3M', '6M', 'INF']
   let distribution = JSON.parse(JSON.stringify(model.stepTime)).map(x => [0, 0, 0])
@@ -81,12 +81,12 @@
     <div class="m-4 h-8 bg-white rounded border flex items-center text-xs relative">
       <p class="text-gray-500 absolute left-2">暂无响应统计数据</p>
       <div class="bg-green-200 h-full overflow-hidden flex items-center justify-end font-mono relative" style:width={TPercent + '%'}>
-        <b class="mx-1">{statistics.T}</b>
+        <b class="mx-1">{statistics.true}</b>
         ({TPercent.toFixed(1)}%)
       </div>
       <div class="bg-red-200 h-full overflow-hidden flex items-center justify-start font-mono relative" style:width={FPercent + '%'}>
         ({FPercent.toFixed(1)}%)
-        <b class="mx-1">{statistics.F}</b>
+        <b class="mx-1">{statistics.false}</b>
       </div>
     </div>
     <div class="rounded border bg-white flex flex-col p-2 m-4" style="max-width: 400px;">
@@ -96,16 +96,16 @@
       </div>
       <div class="font-mono m-4 flex whitespace-nowrap">
         <div class="flex flex-col justify-between items-end text-xs">
-          <b class="text-sm">{(statistics.TTime / statistics.T / 1000).toFixed(1)}</b>
+          <b class="text-sm">{(statistics.trueTime / statistics.true / 1000).toFixed(1)}</b>
           <span class="text-green-500">正确</span>
         </div>
-        <b class="text-4xl">{((statistics.TTime + statistics.FTime) / (statistics.T + statistics.F) / 1000).toFixed(1)}</b>
+        <b class="text-4xl">{((statistics.trueTime + statistics.falseTime) / (statistics.true + statistics.false) / 1000).toFixed(1)}</b>
         <div class="flex flex-col justify-between text-xs">
-          <b class="text-sm">{(statistics.FTime / statistics.F / 1000).toFixed(1)}</b>
+          <b class="text-sm">{(statistics.falseTime / statistics.false / 1000).toFixed(1)}</b>
           <span class="text-red-500">错误</span>
         </div>
         <div class="flex flex-col items-center justify-center text-xs ml-10">
-          <b class="text-xl">{statistics.T + statistics.F}</b>
+          <b class="text-xl">{statistics.true + statistics.false}</b>
           <span class="text-gray-500">统计总数</span>
         </div>
       </div>
