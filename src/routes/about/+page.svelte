@@ -3,11 +3,17 @@
   import guideAndroid from '$lib/images/guide_android.png'
   import guideDesktop from '$lib/images/guide_desktop.png'
   import guideIOS from '$lib/images/guide_ios.png'
+  import srpc from '$lib/srpc.js'
+
+  export let data
 
   let guide = guideDesktop
   const userAgent = navigator.userAgent || navigator.vendor || window.opera
   if (/android/i.test(userAgent)) guide = guideAndroid
   if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) guide = guideIOS
+
+  window.srpc = srpc
+  window.token = data.user.token
 </script>
 
 <div class="min-h-screen w-screen px-8 sm:px-10 py-10 bg-gray-100">
