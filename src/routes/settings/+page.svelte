@@ -26,7 +26,7 @@
       <ASwitch bind:value={settings.exchange} />
     </div>
     <div class="flex items-center">
-      <span class="m-2">允许跳过单词</span>
+      <span class="m-2">允许跳过复习</span>
       <ASwitch bind:value={settings.skip} />
     </div>
   </div>

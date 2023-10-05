@@ -3,6 +3,7 @@
   import { mdiBookOutline, mdiAccountGroupOutline, mdiInformationOutline, mdiPoll, mdiCog, mdiLogout } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
   import { loading } from '$lib/stores.js'
+  import fireImg from '$lib/images/fire.svg'
   import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
   import model from '$lib/model.js'
@@ -114,10 +115,11 @@
   }, 1e3)
 </script>
 
-<div class="h-screen w-full px-4 sm:px-10 py-10 bg-gray-100">
+<div class="min-h-screen w-full px-4 sm:px-10 py-10 bg-gray-100 relative">
+  <img src={fireImg} class="absolute right-0 sm:right-5 lg:right-10 bottom-0 w-1/2" style="min-width: 100px; max-width: 400px;">
   <h1 class="text-3xl">Hi, {data.user.name}</h1>
   <p class="text-gray-500 text-sm">Ace your words in a simple but powerful way!</p>
-  <div class="my-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 select-none">
+  <div class="my-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 select-none relative">
     <div class="rounded border bg-white flex flex-col p-2">
       <button class="flex items-center" on:keypress={book} on:click={book}>
         <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
@@ -160,15 +162,14 @@
       </button>
     </div>
   </div>
-  <div class="mt-2 mb-10 flex items-center">
-    <button class="flex items-center text-gray-500 font-bold" on:click={() => goto('/settings')} on:keypress={() => goto('/settings')}>
+  <div class="mb-6 flex flex-col items-start relative">
+    <button class="flex items-center text-gray-500 font-bold m-2" on:click={() => goto('/settings')} on:keypress={() => goto('/settings')}>
       <AIcon path={mdiCog} size="1.5rem" color="rgb(107 114 128)" />
       <span class="ml-1">Settings</span>
     </button>
-    <button class="ml-10 flex items-center text-gray-500 font-bold" on:click={signout} on:keypress={signout}>
+    <button class="flex items-center text-gray-500 font-bold m-2" on:click={signout} on:keypress={signout}>
       <AIcon path={mdiLogout} size="1.5rem" color="rgb(107 114 128)" />
       <span class="ml-1">Sign out</span>
     </button>
   </div>
-  
 </div>
