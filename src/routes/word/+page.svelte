@@ -63,7 +63,7 @@
     $loading = false
   }
 
-  $loading = true
+  $loading = '背单词要对自己负责哦！'
   if (!data.user) goto('/')
   else if (SS.new > 0 && SS.new != data.newWordsNumber) goto('/word?new=' + SS.new) // refresh with remaining new words
   else init()

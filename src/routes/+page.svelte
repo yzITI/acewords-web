@@ -5,7 +5,7 @@
   }
 </script>
 
-<div class="h-screen w-screen flex flex-col items-center justify-center">
+<div class="h-screen w-full flex flex-col items-center justify-center">
   <img alt="logo" class="w-48 sm:w-64" src={logo}>
   <h1 class="text-gray-700 font-bold text-5xl">Acewords</h1>
   <p class="text-gray-500">in a simple but powerful way</p>

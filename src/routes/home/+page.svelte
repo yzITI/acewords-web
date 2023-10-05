@@ -10,6 +10,7 @@
   export let data
   
   const LS = window.localStorage, SS = window.sessionStorage
+  let syncing = false
   let origin = { power: 0, count: 0 }
   let delta = { count: 0, power: 0 }
   $: delta = {
@@ -20,7 +21,9 @@
   let hasReview = false
 
   async function sync () {
-    $loading = 'Sync your progress ...'
+    syncing = true
+    if (!SS.sync) $loading = 'Sync your progress ...'
+    SS.sync = 1
     if (data.user.id !== LS.user) { // different user
       await model.pro.clear()
       LS.removeItem('meta')
@@ -56,6 +59,7 @@
       LS.meta = JSON.stringify(meta)
     }
     $loading = false
+    syncing = false
   }
 
   if (!data.user) goto('/')
@@ -103,21 +107,21 @@
 
   // check review
   setInterval(async () => {
-    if (!meta.book) return
+    if (!meta.book || syncing) return
     const first = await model.pro.first()
     if (first && first.due < model.time()) hasReview = true
     else hasReview = false
   }, 1e3)
 </script>
 
-<div class="h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
+<div class="h-screen w-full px-4 sm:px-10 py-10 bg-gray-100">
   <h1 class="text-3xl">Hi, {data.user.name}</h1>
   <p class="text-gray-500 text-sm">Ace your words in a simple but powerful way!</p>
   <div class="my-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 select-none">
     <div class="rounded border bg-white flex flex-col p-2">
       <button class="flex items-center" on:keypress={book} on:click={book}>
         <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
-        <b class="ml-1">{meta.bookName || '请选择单词书'}</b>
+        <b class="ml-1">{syncing ? '正在同步...' : (meta.bookName || '请选择单词书')}</b>
       </button>
       <div class="font-mono m-2 flex">
         <b class="text-4xl">{meta.count || 0}</b>
@@ -134,8 +138,8 @@
       <code class="block mx-2 text-xs text-gray-300">{meta.time ? moment(meta.time).format('YYYY-MM-DD HH:mm:ss') : 'No Record'}</code>
       {#if meta.book}
         <div class="items-stretch flex items-center mt-2">
-          <button on:click={() => start()} disabled={!hasReview} class={'grow transition-all shadow hover:shadow-md rounded p-2 m-2 bg-blue-500 text-white font-bold ' + (hasReview ? 'bg-blue-500' : 'bg-gray-500')}>{hasReview ? '复习单词' : '暂无复习'}</button>
-          <button on:click={startNew} class="grow transition-all shadow hover:shadow-md rounded p-2 m-2 bg-purple-500 text-white font-bold">学习新单词</button>
+          <button on:click={() => start()} disabled={!hasReview} class={'w-1/2 transition-all duration-500 shadow hover:shadow-md rounded p-2 m-2 bg-blue-500 text-white font-bold ' + (hasReview ? 'bg-blue-500' : 'bg-gray-500')}>{hasReview ? '复习单词' : '暂无复习'}</button>
+          <button on:click={startNew} disabled={syncing} class={'w-1/2 transition-all duration-500 shadow hover:shadow-md rounded p-2 m-2 bg-blue-500 text-white font-bold ' + (syncing ? 'bg-gray-500' : 'bg-purple-500')}>{syncing ? '正在同步' : '学习新单词'}</button>
         </div>
       {/if}
     </div>

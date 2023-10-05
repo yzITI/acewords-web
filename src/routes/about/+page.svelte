@@ -16,7 +16,7 @@
   window.token = data.user.token
 </script>
 
-<div class="min-h-screen w-screen px-8 sm:px-10 py-10 bg-gray-100">
+<div class="min-h-screen w-full px-8 sm:px-10 py-10 bg-gray-100">
   <h1 class="flex items-center">
     <img class="w-16 h-16" alt="logo" src={logo}>
     <span class="text-2xl ml-2 font-semibold">关于 Acewords</span>

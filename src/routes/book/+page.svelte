@@ -43,7 +43,7 @@
   else fetch()
 </script>
 
-<div class="min-h-screen w-screen px-4 sm:px-10 py-10 bg-gray-100">
+<div class="min-h-screen w-full px-4 sm:px-10 py-10 bg-gray-100">
   <h1 class="text-3xl">选择单词书</h1>
   <p class="text-gray-500 text-sm">您的背单词记录将被清除</p>
   <div class="mt-6 text-lg font-bold text-gray-700 select-none">
