@@ -31,9 +31,10 @@
     input = ''
     if (d < 0) return swal.fire('Unknown Word', 'The word you guessed is out of range!', 'error')
     last = { word, dist: d }
-    last.score = 100 - Math.max(0, d - 0.25) / 0.25 * 100
+    last.score = Math.max(0, 100 - (d * 2.2) ** 7 * 100)
     if (last.dist <= 0) last.color = 'bg-green-300'
-    else if (last.score > 80) last.color = 'bg-blue-300'
+    else if (last.score > 90) last.color = 'bg-purple-300'
+    else if (last.score > 75) last.color = 'bg-blue-300'
     else if (last.score > 50) last.color = 'bg-amber-300'
     else if (last.score > 20) last.color = 'bg-orange-300'
     else last.color = 'bg-red-300'
