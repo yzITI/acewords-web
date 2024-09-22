@@ -2,28 +2,27 @@
   import { goto } from '$app/navigation'
   import { mdiBookOutline, mdiAccountGroupOutline, mdiInformationOutline, mdiPoll, mdiCog, mdiLogout } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
-  import { loading } from '$lib/stores.js'
+  import { LS, SS, S } from '$lib/S.svelte'
   import fireImg from '$lib/images/fire.svg'
   import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
   import model from '$lib/model.js'
   import moment from 'moment'
-  export let data
+  let { data } = $props()
   
-  const LS = window.localStorage, SS = window.sessionStorage
-  let syncing = false
-  let origin = { power: 0, count: 0 }
-  let delta = { count: 0, power: 0 }
-  $: delta = {
+  let syncing = $state(false)
+  let origin = $state({ power: 0, count: 0 })
+  let delta = $state({ count: 0, power: 0 })
+  $effect(() => delta = {
     count: (meta.count || 0) - origin.count,
     power: ((meta.power || 0) - origin.power).toFixed(1)
-  }
-  let meta = JSON.parse(LS.meta || '{}')
-  let hasReview = false
+  })
+  let meta = $state(JSON.parse(LS.meta || '{}'))
+  let hasReview = $state(false)
 
   async function sync () {
     syncing = true
-    if (!SS.sync) $loading = 'Sync your progress ...'
+    if (!SS.sync) S.loading = 'Sync your progress ...'
     SS.sync = 1
     if (data.user.id !== LS.user) { // different user
       await model.pro.clear()
@@ -59,7 +58,7 @@
       meta = local
       LS.meta = JSON.stringify(meta)
     }
-    $loading = false
+    S.loading = false
     syncing = false
   }
 
@@ -85,7 +84,7 @@
   }
 
   function start (newWordsNumber) {
-    $loading = '背单词要对自己负责哦！'
+    S.loading = '背单词要对自己负责哦！'
     SS.removeItem('new')
     if (newWordsNumber) goto('/word?new=' + newWordsNumber)
     else goto('/word')
@@ -121,7 +120,7 @@
   <p class="text-gray-500 text-sm">Ace your words in a simple but powerful way!</p>
   <div class="my-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 select-none relative">
     <div class="rounded border bg-white flex flex-col p-2">
-      <button class="flex items-center" on:keypress={book} on:click={book}>
+      <button class="flex items-center" onkeypress={book} onclick={book}>
         <AIcon path={mdiBookOutline} size="1.5rem" color="rgb(55 65 81)" />
         <b class="ml-1">{syncing ? '正在同步...' : (meta.bookName || '请选择单词书')}</b>
       </button>
@@ -140,34 +139,34 @@
       <code class="block mx-2 text-xs text-gray-300">{meta.time ? moment(meta.time).format('YYYY-MM-DD HH:mm:ss') : 'No Record'}</code>
       {#if meta.book}
         <div class="items-stretch flex items-center mt-2">
-          <button on:click={() => start()} disabled={!hasReview} class={'w-1/2 transition-all duration-500 shadow hover:shadow-md rounded p-2 m-2 bg-blue-500 text-white font-bold ' + (hasReview ? 'bg-blue-500' : 'bg-gray-500')}>{hasReview ? '复习单词' : '暂无复习'}</button>
-          <button on:click={startNew} disabled={syncing} class={'w-1/2 transition-all duration-500 shadow hover:shadow-md rounded p-2 m-2 bg-blue-500 text-white font-bold ' + (syncing ? 'bg-gray-500' : 'bg-purple-500')}>{syncing ? '正在同步' : '学习新单词'}</button>
+          <button onclick={() => start()} disabled={!hasReview} class={'w-1/2 transition-all duration-500 shadow hover:shadow-md rounded p-2 m-2 bg-blue-500 text-white font-bold ' + (hasReview ? 'bg-blue-500' : 'bg-gray-500')}>{hasReview ? '复习单词' : '暂无复习'}</button>
+          <button onclick={startNew} disabled={syncing} class={'w-1/2 transition-all duration-500 shadow hover:shadow-md rounded p-2 m-2 bg-blue-500 text-white font-bold ' + (syncing ? 'bg-gray-500' : 'bg-purple-500')}>{syncing ? '正在同步' : '学习新单词'}</button>
         </div>
       {/if}
     </div>
     <div class="flex flex-col my-4 sm:my-0 sm:mx-4">
-      <button class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md flex items-center bg-white" on:keypress={() => goto('/group')} on:click={() => goto('/group')}>
+      <button class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md flex items-center bg-white" onkeypress={() => goto('/group')} onclick={() => goto('/group')}>
         <AIcon path={mdiAccountGroupOutline} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">我的小组</b>
       </button>
-      <button class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md flex items-center bg-white mt-2" on:keypress={() => goto('/progress')} on:click={() => goto('/progress')}>
+      <button class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md flex items-center bg-white mt-2" onkeypress={() => goto('/progress')} onclick={() => goto('/progress')}>
         <AIcon path={mdiPoll} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">单词进度</b>
       </button>
     </div>
     <div class="flex flex-col my-4 lg:my-0 lg:mx-4">
-      <button class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md flex items-center bg-white" on:keypress={() => goto('/about')} on:click={() => goto('/about')}>
+      <button class="text-xl text-gray-700 rounded p-4 transition-all shadow hover:shadow-md flex items-center bg-white" onkeypress={() => goto('/about')} onclick={() => goto('/about')}>
         <AIcon path={mdiInformationOutline} size="2rem" color="rgb(55 65 81)" />
         <b class="ml-2">关于Acewords</b>
       </button>
     </div>
   </div>
   <div class="mb-6 flex flex-col items-start relative">
-    <button class="flex items-center text-gray-500 font-bold m-2" on:click={() => goto('/settings')} on:keypress={() => goto('/settings')}>
+    <button class="flex items-center text-gray-500 font-bold m-2" onclick={() => goto('/settings')} onkeypress={() => goto('/settings')}>
       <AIcon path={mdiCog} size="1.5rem" color="rgb(107 114 128)" />
       <span class="ml-1">Settings</span>
     </button>
-    <button class="flex items-center text-gray-500 font-bold m-2" on:click={signout} on:keypress={signout}>
+    <button class="flex items-center text-gray-500 font-bold m-2" onclick={signout} onkeypress={signout}>
       <AIcon path={mdiLogout} size="1.5rem" color="rgb(107 114 128)" />
       <span class="ml-1">Sign out</span>
     </button>

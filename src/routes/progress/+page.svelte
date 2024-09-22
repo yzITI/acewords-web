@@ -2,22 +2,20 @@
   import { goto } from '$app/navigation'
   import { mdiChevronLeft, mdiBookOutline, mdiClockOutline } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
-  import { loading } from '$lib/stores.js'
+  import { LS, S } from '$lib/S.svelte'
   import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
   import model from '$lib/model.js'
   import moment from 'moment'
 
-  const LS = window.localStorage
-  let total = 0
-  let meta = JSON.parse(LS.meta || '{}')
-  let statistics = JSON.parse(LS.statistics || '{"true":0,"false":0,"trueTime":0,"falseTime":0}')
-  let TPercent = 0, FPercent = 0
-  $: TPercent = 100 * statistics.true / (statistics.true + statistics.false) || 0
-  $: FPercent = 100 * statistics.false / (statistics.true + statistics.false) || 0
+  let total = $state(0)
+  let meta = $state(JSON.parse(LS.meta || '{}'))
+  let statistics = $state(JSON.parse(LS.statistics || '{"true":0,"false":0,"trueTime":0,"falseTime":0}'))
+  const TPercent = $derived(100 * statistics.true / (statistics.true + statistics.false) || 0)
+  const FPercent = $derived(100 * statistics.false / (statistics.true + statistics.false) || 0)
 
   const stepTimeDescription = ['0s', '10s', '30s', '2m', '5m', '30m', '12h', '1d', '2d', '4d', '7d', '15d', '1M', '2M', '3M', '6M', 'INF']
-  let distribution = JSON.parse(JSON.stringify(model.stepTime)).map(x => [0, 0, 0])
+  let distribution = $state(JSON.parse(JSON.stringify(model.stepTime)).map(x => [0, 0, 0]))
   async function computeDistribution () {
     const all = await model.pro.all()
     for (const w of all) {
@@ -34,7 +32,7 @@
 
 <div class="min-h-screen w-full px-2 sm:px-10 py-10 bg-gray-100">
   <h1 class="text-2xl font-bold flex items-center select-none">
-    <button class="transition-all pl-2 hover:pr-2 hover:pl-0" on:click={() => goto('/home')}><AIcon path={mdiChevronLeft} size="2.5rem" /></button>
+    <button class="transition-all pl-2 hover:pr-2 hover:pl-0" onclick={() => goto('/home')}><AIcon path={mdiChevronLeft} size="2.5rem" /></button>
     <span class="text-3xl">单词进度</span>
   </h1>
   {#if meta.book}

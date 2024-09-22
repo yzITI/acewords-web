@@ -2,16 +2,16 @@
   import { goto } from '$app/navigation'
   import { mdiAccountGroupOutline, mdiAccountOutline, mdiCheck, mdiTrashCanOutline, mdiChevronLeft, mdiBookOutline } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
-  import { loading } from '$lib/stores.js'
+  import { S } from '$lib/S.svelte'
   import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
   import moment from 'moment'
-  export let data
-  let group = {}
-  let books = {}
+  let { data } = $props()
+  let group = $state({})
+  let books = $state({})
 
   async function fetch () {
-    $loading = 'Loading group ...'
+    S.loading = 'Loading group ...'
     group = await srpc.group.get(data.user.token, data._id)
     if (!group) { // join
       // join
@@ -19,7 +19,7 @@
       if (!res) {
         await swal.fire('小组不存在', '', 'error')
         goto('/group')
-        return $loading = false
+        return S.loading = false
       }
       group = await srpc.group.get(data.user.token, data._id)
     }
@@ -28,9 +28,7 @@
       if (!u.meta?.book) continue
       books[u.meta.book] = u.meta.bookName
     }
-    books = books
-    group = group
-    $loading = false
+    S.loading = false
   }
 
   if (!data.user) goto('/')
@@ -38,11 +36,10 @@
 
   function removeUser (i) {
     group.users.splice(i, 1)
-    group = group
   }
 
   async function submit () {
-    $loading = 'Updating ...'
+    S.loading = 'Updating ...'
     const users = group.users.map(x => x._id)
     await srpc.group.put(data.user.token, data._id, {
       admin: group.admin,
@@ -50,7 +47,7 @@
       users
     })
     await swal.fire('Success', 'Group updated successfully', 'success')
-    $loading = false
+    S.loading = false
   }
 
   async function remove () {
@@ -61,10 +58,10 @@
       showCancelButton: true
     })
     if (!isConfirmed) return
-    $loading = 'Deleting ...'
+    S.loading = 'Deleting ...'
     await srpc.group.del(data.user.token, data._id)
     await swal.fire('Success', 'Group deleted successfully', 'success')
-    $loading = false
+    S.loading = false
     goto('/group')
   }
 </script>
@@ -72,7 +69,7 @@
 <div class="min-h-screen w-full px-4 sm:px-10 py-10 bg-gray-100">
   {#if group?._id}
     <h1 class="text-2xl font-bold flex items-center select-none">
-      <button class="transition-all pl-2 hover:pr-2 hover:pl-0" on:click={() => goto('/group')}><AIcon path={mdiChevronLeft} size="2.5rem" /></button>
+      <button class="transition-all pl-2 hover:pr-2 hover:pl-0" onclick={() => goto('/group')}><AIcon path={mdiChevronLeft} size="2.5rem" /></button>
       <AIcon path={mdiAccountGroupOutline} size="2rem" />
       <input class="bg-transparent border-none outline-none ml-2 w-full" bind:value={group.name} disabled={group.admin !== data.user.id}>
     </h1>
@@ -88,7 +85,7 @@
               <AIcon path={mdiAccountOutline} size="1.5rem" color="rgb(55 65 81)" />
               <span class="ml-2">{u.name}</span>
               {#if group.admin === data.user.id && u._id !== data.user.id}
-                <button class="ml-2" on:click={() => removeUser(i)} on:keypress={() => removeUser(i)}>
+                <button class="ml-2" onclick={() => removeUser(i)} onkeypress={() => removeUser(i)}>
                   <AIcon path={mdiTrashCanOutline} size="1.25rem" color="rgb(252 165 165)" />
                 </button>
               {/if}
@@ -111,10 +108,10 @@
       {/each}
     </div>
     {#if group.admin === data.user.id}
-      <button class="fixed right-6 bottom-10 rounded-full p-3 bg-blue-500 shadow transition-all hover:shadow-md" on:click={submit} on:keypress={submit}>
+      <button class="fixed right-6 bottom-10 rounded-full p-3 bg-blue-500 shadow transition-all hover:shadow-md" onclick={submit} onkeypress={submit}>
         <AIcon path={mdiCheck} size="2rem" color="white" />
       </button>
-      <button class="fixed top-2 right-2" on:click={remove} on:keypress={remove}>
+      <button class="fixed top-2 right-2" onclick={remove} onkeypress={remove}>
         <AIcon path={mdiTrashCanOutline} size="1.5rem" color="rgb(252 165 165)" />
       </button>
     {/if}

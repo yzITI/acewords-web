@@ -5,10 +5,10 @@
   import guideIOS from '$lib/images/guide_ios.png'
   import srpc from '$lib/srpc.js'
 
-  export let data
+  let { data } = $props()
 
-  let guide = guideDesktop
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera
+  let guide = $state(guideDesktop)
+  const userAgent = $state(navigator.userAgent || navigator.vendor || window.opera)
   if (/android/i.test(userAgent)) guide = guideAndroid
   if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) guide = guideIOS
 
@@ -41,9 +41,9 @@
   <div style="max-width: 600px;" class="flex flex-col bg-white shadow my-4 p-2 rounded">
     <div class="flex items-center flex-wrap">
       <div class="flex rounded overflow-hidden border font-bold">
-        <button on:click={() => { guide = guideDesktop }} class={'transition-all p-2 w-20 ' + (guide === guideDesktop ? 'bg-blue-500 text-white' : 'bg-white text-black')}>桌面</button>
-        <button on:click={() => { guide = guideAndroid }} class={'transition-all border-x p-2 w-20 ' + (guide === guideAndroid ? 'bg-blue-500 text-white' : 'bg-white text-black')}>安卓</button>
-        <button on:click={() => { guide = guideIOS }} class={'transition-all p-2 w-20 ' + (guide === guideIOS ? 'bg-blue-500 text-white' : 'bg-white text-black')}>iOS</button>
+        <button onclick={() => { guide = guideDesktop }} class={'transition-all p-2 w-20 ' + (guide === guideDesktop ? 'bg-blue-500 text-white' : 'bg-white text-black')}>桌面</button>
+        <button onclick={() => { guide = guideAndroid }} class={'transition-all border-x p-2 w-20 ' + (guide === guideAndroid ? 'bg-blue-500 text-white' : 'bg-white text-black')}>安卓</button>
+        <button onclick={() => { guide = guideIOS }} class={'transition-all p-2 w-20 ' + (guide === guideIOS ? 'bg-blue-500 text-white' : 'bg-white text-black')}>iOS</button>
       </div>
       <p class="text-sm text-gray-500 m-2">{guide === guideIOS ? 'Safari浏览器' : 'Google Chrome浏览器'}</p>
     </div>

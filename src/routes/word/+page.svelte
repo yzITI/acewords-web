@@ -3,17 +3,16 @@
   import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
   import model from '$lib/model.js'
-  import { loading } from '$lib/stores.js'
+  import { S, LS, SS } from '$lib/S.svelte'
   import { fade } from 'svelte/transition'
 
-  export let data
-  const LS = window.localStorage, SS = window.sessionStorage
-  let settings = JSON.parse(LS.settings || '{}')
-  let statistics = JSON.parse(LS.statistics || '{"true":0,"false":0,"trueTime":0,"falseTime":0}')
-  let totalCount = NaN
-  let book = {}
-  let meta = {}
-  let newIDs = []
+  let { data } = $props()
+  let settings = $state(JSON.parse(LS.settings || '{}'))
+  let statistics = $state(JSON.parse(LS.statistics || '{"true":0,"false":0,"trueTime":0,"falseTime":0}'))
+  let totalCount = $state(NaN)
+  let book = $state({})
+  let meta = $state({})
+  let newIDs = $state([])
 
   function shuffle (array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -60,10 +59,10 @@
       const libRes = await srpc.word.get(needs)
       await model.lib.put(libRes)
     }
-    $loading = false
+    S.loading = false
   }
 
-  $loading = '背单词要对自己负责哦！'
+  S.loading = '背单词要对自己负责哦！'
   if (!data.user) goto('/')
   else if (SS.new > 0 && SS.new != data.newWordsNumber) goto('/word?new=' + SS.new) // refresh with remaining new words
   else init()
@@ -75,10 +74,10 @@
     audio.src = `https://dict.youdao.com/dictvoice?audio=${current.word}&type=1`
   }
 
-  let show = false
-  let cover = true
-  let startTime = 0
-  let current = {}
+  let show = $state(false)
+  let cover = $state(true)
+  let startTime = $state(0)
+  let current = $state({})
   let currentPro = {}
 
   async function next () {
@@ -138,8 +137,8 @@
 <div class="h-screen w-screen px-4 py-16 bg-gray-100 flex flex-col items-center justify-between">
   {#if current.word}
     <div class="flex flex-col items-center w-full" style="max-width: 360px;">
-      <h2 class="text-4xl font-bold" on:click={play} on:keypress={play}>{current.word}</h2>
-      <p class="italic text-gray-700 my-2" on:click={play} on:keypress={play}>/{current.phonetic}/</p>
+      <h2 class="text-4xl font-bold" onclick={play} onkeypress={play}>{current.word}</h2>
+      <p class="italic text-gray-700 my-2" onclick={play} onkeypress={play}>/{current.phonetic}/</p>
       {#if show}
         <div class="w-full border bg-white rounded p-2 mt-6 transition-all">
           {#each current.translation as t}
@@ -166,15 +165,15 @@
     </div>
     <div class="flex items-end justify-between my-4 font-bold text-lg w-full" style="max-width: 400px;">
       {#if show}
-        <button on:click={() => response(false)} class="transition-all shadow hover:shadow-md rounded w-1/2 p-2 bg-red-500 text-white mx-2">错误</button>
+        <button onclick={() => response(false)} class="transition-all shadow hover:shadow-md rounded w-1/2 p-2 bg-red-500 text-white mx-2">错误</button>
         <div class="flex flex-col items-center w-1/2">
           {#if settings.skip}
-            <button on:click={() => response(true, 2)} class="transition-all hover:bg-gray-200 rounded py-2 px-4 text-yellow-500 mx-2 mb-4 text-base">跳过复习</button>
+            <button onclick={() => response(true, 2)} class="transition-all hover:bg-gray-200 rounded py-2 px-4 text-yellow-500 mx-2 mb-4 text-base">跳过复习</button>
           {/if}
-          <button on:click={() => response(true)} class="transition-all shadow hover:shadow-md rounded w-full p-2 bg-green-500 text-white mx-2">正确</button>
+          <button onclick={() => response(true)} class="transition-all shadow hover:shadow-md rounded w-full p-2 bg-green-500 text-white mx-2">正确</button>
         </div>
       {:else}
-        <button on:click={() => show = true} class="transition-all shadow hover:shadow-md rounded w-full p-2 bg-blue-500 text-white">查看释义</button>
+        <button onclick={() => show = true} class="transition-all shadow hover:shadow-md rounded w-full p-2 bg-blue-500 text-white">查看释义</button>
       {/if}
     </div>
   {/if}
@@ -184,7 +183,7 @@
   {/if}
 </div>
 {#if cover}
-  <div transition:fade class="fixed w-screen h-screen bg-gray-100 top-0 left-0 flex items-center justify-center" on:click={next} on:keypress={next}>
+  <div transition:fade class="fixed w-screen h-screen bg-gray-100 top-0 left-0 flex items-center justify-center" onclick={next} onkeypress={next}>
     <p>轻触屏幕开始学习单词</p>
   </div>
 {/if}

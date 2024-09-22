@@ -1,7 +1,7 @@
 <script>
   import '../index.css'
   import loadingImg from '$lib/images/loading.svg'
-  import { loading } from '$lib/stores.js'
+  import S from '$lib/S.svelte'
   import { fade } from 'svelte/transition'
   import { pwaInfo } from 'virtual:pwa-info'
   import { registerSW } from 'virtual:pwa-register'
@@ -10,7 +10,7 @@
     onOfflineReady () {}
   })
 
-  $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : ''
+  const webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '')
 </script>
 
 <svelte:head>
@@ -28,11 +28,11 @@
 
 <slot></slot>
 
-{#if $loading}
+{#if S.loading}
   <div transition:fade class="fixed z-50 top-0 left-0 w-screen h-screen bg-gray-100 flex flex-col items-center justify-center">
     <img alt="loading" src={loadingImg}>
-    {#if typeof $loading === 'string'}
-      <div class="my-2">{$loading}</div>
+    {#if typeof S.loading === 'string'}
+      <div class="my-2">{S.loading}</div>
     {/if}
   </div>
 {/if}
