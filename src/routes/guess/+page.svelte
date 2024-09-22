@@ -20,6 +20,13 @@
   async function submit (e) {
     if (e.key !== 'Enter' || !input.match(/\S/)) return
     const word = input = input.toLowerCase()
+    for (const l of list) {
+      if (l.word === word) {
+        last = l
+        input = ''
+        return
+      }
+    }
     const d = await srpc.guess.try(word)
     input = ''
     if (d < 0) return swal.fire('Unknown Word', 'The word you guessed is out of range!', 'error')
