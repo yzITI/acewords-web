@@ -4,6 +4,8 @@
   import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
   import { S, LS, SS } from '$lib/S.svelte'
+  import { mdiBookOutline, mdiClockTimeFourOutline } from '@mdi/js'
+  import { AIcon } from 'ace.svelte'
   let input = $state('')
   let info = $state({ _id: 'loading' })
   let list = $state([])
@@ -53,10 +55,10 @@
 
 <div class="h-screen w-screen p-4 bg-gray-100">
   <h1 class="font-bold text-3xl">Guess Word!</h1>
-  <p class="mb-6 text-xs px-1 text-gray-300">Game: {info._id}</p>
+  <code class="block mb-6 text-xs px-1 text-gray-300">Game: {info._id}</code>
   <div class="w-full flex justify-between">
-    <b>{info.bookName}</b>
-    <code>{time}</code>
+    <b class="flex items-center"><AIcon path={mdiBookOutline} class="mr-1" />{info.bookName}</b>
+    <code class="flex items-center"><AIcon path={mdiClockTimeFourOutline} class="mr-1" />{time}</code>
   </div>
   <div class="w-full my-2 border rounded overflow-hidden relative">
     <input bind:value={input} onkeyup={e => submit(e)} class="w-full p-2" placeholder="Enter your guess here!">
