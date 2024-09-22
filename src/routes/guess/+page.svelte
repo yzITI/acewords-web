@@ -8,6 +8,7 @@
   let info = $state({ _id: 'loading' })
   let list = $state([])
   let last = $state(null)
+  let time = $state('')
   async function init () {
     S.loading = true
     info = await srpc.guess.get()
@@ -30,13 +31,35 @@
     list.push(last)
     list.sort((a, b) => a.dist - b.dist)
   }
+  async function countDown (ms) {
+    while (1) {
+      await new Promise(r => setTimeout(r, 1e3))
+      if (!info.time) {
+        time = ''
+        continue
+      }
+      const delta = 86400e3 - (Date.now() - info.time)
+      if (delta < 0) {
+        await init()
+        list = []
+        last = null
+      }
+      const hr = Math.trunc(delta / 3600e3).toString(), min = Math.trunc(delta % 3600e3 / 60e3).toString(), sec = Math.trunc(delta % 60e3 / 1e3).toString()
+      time = `${hr.padStart(2, '0')}:${min.padStart(2, '0')}:${sec.padStart(2, '0')}`
+    }
+  }
+  countDown()
 </script>
 
 <div class="h-screen w-screen p-4 bg-gray-100">
   <h1 class="font-bold text-3xl">Guess Word!</h1>
   <p class="mb-6 text-xs px-1 text-gray-300">Game: {info._id}</p>
+  <div class="w-full flex justify-between">
+    <b>{info.bookName}</b>
+    <code>{time}</code>
+  </div>
   <div class="w-full my-2 border rounded overflow-hidden relative">
-    <input bind:value={input} onkeyup={e => submit(e)} class="w-full p-2" placeholder="Enter your guess!">
+    <input bind:value={input} onkeyup={e => submit(e)} class="w-full p-2" placeholder="Enter your guess here!">
   </div>
   <div>
     {#snippet item(l)}
@@ -49,6 +72,7 @@
     {#if last}
       {@render item(last)}
     {/if}
+    <p class="text-gray-500">The score (out of 100) represents correlation between your guess and the answer.</p>
     <hr class="my-2">
     {#each list as l}
       {@render item(l)}
