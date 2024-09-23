@@ -4,7 +4,7 @@
   import srpc from '$lib/srpc.js'
   import swal from 'sweetalert2'
   import { S, LS, SS } from '$lib/S.svelte'
-  import { mdiBookOutline, mdiClockTimeFourOutline } from '@mdi/js'
+  import { mdiBookOutline, mdiClockTimeFourOutline, mdiInformationOutline  } from '@mdi/js'
   import { AIcon } from 'ace.svelte'
   let input = $state('')
   let info = $state({ _id: 'loading' })
@@ -15,7 +15,7 @@
     S.loading = true
     info = await srpc.guess.get()
     const cache = JSON.parse(LS.guess || '{}')
-    if (cache._id === info._id) list = cache.list
+    if (cache.time === info.time && info._id === cache._id) list = cache.list
     else LS.removeItem('guess')
     S.loading = false
   }
@@ -46,7 +46,8 @@
     else last.color = 'bg-red-300'
     list.push(last)
     list.sort((a, b) => a.dist - b.dist)
-    LS.guess = JSON.stringify({ _id: info._id, list })
+    LS.guess = JSON.stringify({ _id: info._id, time: info.time, list })
+    if (last.dist <= 0) swal.fire('You get it!', '', 'success')
   }
   async function countDown (ms) {
     while (1) {
@@ -66,11 +67,22 @@
     }
   }
   countDown()
+
+  function showHelp () {
+    swal.fire('Help', 'Your goal is to guess a word. <br> By each guess, a score (out of 100) will evaluate the correlation between your guess and the answer.', 'info')
+  }
 </script>
 
 <div class="min-h-screen w-full p-4 pb-10 bg-gray-100">
-  <h1 class="font-bold text-3xl">Guess Word!</h1>
-  <code class="block mb-6 text-xs px-1 text-gray-300">Game: {info._id}</code>
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-bold text-3xl">G'aceWord!</h1>
+      <code class="block mb-6 text-xs px-1 text-gray-300">Game: {info._id}</code>
+    </div>
+    <button class="text-gray-400" onclick={showHelp}>
+      <AIcon path={mdiInformationOutline} size="2rem"></AIcon>
+    </button>
+  </div>
   <div class="w-full flex justify-between">
     <b class="flex items-center"><AIcon path={mdiBookOutline} class="mr-1" />{info.bookName}</b>
     <code class="flex items-center"><AIcon path={mdiClockTimeFourOutline} class="mr-1" />{time}</code>
@@ -89,7 +101,7 @@
     {#if last}
       {@render item(last)}
     {/if}
-    <p class="text-gray-500">The score (out of 100) represents correlation between your guess and the answer.</p>
+    <p class="text-gray-500 font-bold text-right mt-4">Total Guess: {list.length}</p>
     <hr class="my-2">
     {#each list as l}
       {@render item(l)}
