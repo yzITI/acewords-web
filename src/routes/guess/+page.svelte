@@ -17,8 +17,9 @@
     S.loading = false
   }
   init()
+  let trying = false
   async function submit (e) {
-    if (e.key !== 'Enter' || !input.match(/\S/)) return
+    if (trying || e.key !== 'Enter' || !input.match(/\S/)) return
     const word = input = input.toLowerCase()
     for (const l of list) {
       if (l.word === word) {
@@ -27,7 +28,9 @@
         return
       }
     }
+    trying = true
     const d = await srpc.guess.try(word)
+    trying = false
     input = ''
     if (d < 0) return swal.fire('Unknown Word', 'The word you guessed is out of range!', 'error')
     last = { word, dist: d }
@@ -61,7 +64,7 @@
   countDown()
 </script>
 
-<div class="h-screen w-screen p-4 bg-gray-100">
+<div class="min-h-screen w-full p-4 pb-10 bg-gray-100">
   <h1 class="font-bold text-3xl">Guess Word!</h1>
   <code class="block mb-6 text-xs px-1 text-gray-300">Game: {info._id}</code>
   <div class="w-full flex justify-between">
