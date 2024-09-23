@@ -32,7 +32,7 @@
     const d = await srpc.guess.try(word)
     trying = false
     input = ''
-    if (d < 0) return swal.fire('Unknown Word', 'The word you guessed is out of range!', 'error')
+    if (d < 0) return last = { word: 'out of range', score: 0, dist: 1 }
     last = { word, dist: d }
     last.score = Math.max(0, 100 - (d * 2.2) ** 7 * 100)
     if (last.dist <= 0) last.color = 'bg-green-300'
