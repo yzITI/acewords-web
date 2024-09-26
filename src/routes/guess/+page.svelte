@@ -23,7 +23,7 @@
   let trying = false
   async function submit (e) {
     if (trying || e.key !== 'Enter' || !input.match(/\S/)) return
-    const word = input = input.toLowerCase()
+    const word = input = input.toLowerCase().trim()
     for (const l of list) {
       if (l.word === word) {
         last = l
