@@ -37,7 +37,7 @@
     input = ''
     if (d < 0) return last = { word: 'unknown word / out of range', score: 0, dist: 1 }
     last = { word, dist: d }
-    last.score = Math.max(0, 100 - (d * 2.2) ** 7 * 100)
+    last.score = Math.max(100 - Math.exp(d * 50) / 4e7, 0)
     if (last.dist <= 0.001) last.color = 'bg-green-300'
     else if (last.score > 90) last.color = 'bg-purple-300'
     else if (last.score > 75) last.color = 'bg-blue-300'
